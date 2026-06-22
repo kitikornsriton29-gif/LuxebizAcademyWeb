@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LuxeBiz Academy - The Golden Standard</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        midnight: '#07090F',
+                        gold: '#D4AF37',
+                        goldLight: '#F3E5AB',
+                        goldDark: '#B8860B',
+                        ivory: '#FDFBF7',
+                        charcoal: '#151720'
+                    },
+                    fontFamily: {
+                        serif: ['"Playfair Display"', 'serif'],
+                        sans: ['"Montserrat"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: #07090F; }
+        ::-webkit-scrollbar-thumb { background: #D4AF37; border-radius: 10px; }
+        
+        .luxury-pattern {
+            background-color: #07090F;
+            background-image: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M40 0l40 40-40 40L0 40z' fill='%23D4AF37' fill-opacity='0.025' fill-rule='evenodd'/%3E%3C/svg%3E");
+            background-size: 60px 60px;
+        }
+        .text-gold-gradient {
+            background: linear-gradient(to right, #F3E5AB, #D4AF37, #B8860B);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .btn-gold-metallic {
+            background: linear-gradient(135deg, #E6C25A 0%, #D4AF37 50%, #B8860B 100%);
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+            color: #07090F;
+            transition: all 0.3s ease;
+        }
+        .btn-gold-metallic:hover:not(:disabled) {
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+            transform: translateY(-2px);
+        }
+        .hover-pop {
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.3s ease;
+            will-change: transform;
+        }
+        .hover-pop:hover:not(:disabled) {
+            transform: translateY(-3px) scale(1.02);
+            filter: brightness(1.1);
+        }
+        .hover-pop:active:not(:disabled) { transform: translateY(1px) scale(0.98); }
+        .typewriter-cursor::after { content: '|'; animation: blink 1s step-end infinite; color: #D4AF37; }
+        @keyframes blink { from, to { color: transparent } 50% { color: #D4AF37; } }
+        .glass-nav {
+            background: rgba(7, 9, 15, 0.85); backdrop-filter: blur(16px); border-top: 1px solid rgba(212, 175, 55, 0.15);
+        }
+        @keyframes spin-border { 100% { transform: translate(-50%, -50%) rotate(360deg); } }
+        .animated-border-layer { animation: spin-border 3.5s linear infinite; }
+        .gold-divider { height: 1px; width: 100%; background: linear-gradient(to right, transparent, rgba(212, 175, 55, 0.5), transparent); }
+        .screen-transition { transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1), transform 0.6s cubic-bezier(0.22, 1, 0.36, 1); will-change: opacity, transform; }
+        .screen-hidden { display: none !important; opacity: 0; transform: translateY(15px) scale(0.98); pointer-events: none; }
+        .screen-active { display: flex !important; opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        .ans-wrong { animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both; }
+        .ans-correct { transform: scale(1.02); transition: transform 0.3s ease; }
+    </style>
+</head>
+<body class="bg-midnight text-ivory font-sans h-screen overflow-hidden flex flex-col relative select-none">
+
+    <canvas id="particles-canvas" class="absolute inset-0 pointer-events-none z-0"></canvas>
+
+    <main class="flex-1 overflow-y-auto z-10 flex flex-col max-w-md mx-auto w-full border-x border-gold border-opacity-20 shadow-[0_0_40px_rgba(212,175,55,0.05)] relative h-full luxury-pattern">
+        
+        <!-- SIDE DRAWER OVERLAY & MENU (Swipe from Left to Reveal) -->
+        <div id="side-drawer-overlay" class="absolute inset-0 bg-black bg-opacity-60 z-[70] hidden opacity-0 transition-opacity duration-300" onclick="closeSideDrawer()"></div>
+        <div id="side-drawer" class="absolute top-0 left-0 h-full w-64 bg-midnight border-r border-gold border-opacity-30 z-[80] transform -translate-x-full transition-transform duration-300 flex flex-col shadow-[10px_0_30px_rgba(0,0,0,0.8)]">
+            <div class="p-6 border-b border-gold border-opacity-20">
+                <div class="flex items-center justify-between">
+                    <h2 class="font-serif text-gold-gradient font-bold text-lg tracking-widest">MENU</h2>
+                    <button onclick="closeSideDrawer()" class="text-gray-400 hover:text-gold transition-colors hover-pop"><i class="fa-solid fa-xmark text-lg"></i></button>
+                </div>
+                <p class="text-[9px] text-gray-500 mt-1 tracking-widest uppercase">Navigation Drawer</p>
+            </div>
+            <div class="flex-1 overflow-y-auto p-4 space-y-2">
+                <button onclick="drawerNavigate('welcome')" class="hover-pop w-full text-left px-4 py-3.5 rounded-xl border border-transparent hover:border-gold hover:border-opacity-30 hover:bg-gold hover:bg-opacity-10 text-gray-300 hover:text-gold transition-all text-xs font-semibold uppercase tracking-wider flex items-center space-x-3"><i class="fa-solid fa-door-open w-5 text-center"></i><span>หน้าแรกสุด</span></button>
+                <button onclick="drawerNavigate('subject')" class="hover-pop w-full text-left px-4 py-3.5 rounded-xl border border-transparent hover:border-gold hover:border-opacity-30 hover:bg-gold hover:bg-opacity-10 text-gray-300 hover:text-gold transition-all text-xs font-semibold uppercase tracking-wider flex items-center space-x-3"><i class="fa-solid fa-book w-5 text-center"></i><span>เลือกวิชาเรียน</span></button>
+                <div class="gold-divider my-2 opacity-20"></div>
+                <button onclick="drawerNavigate('dashboard')" id="drawer-suite-btn" class="hover-pop w-full text-left px-4 py-3.5 rounded-xl border border-transparent hover:border-gold hover:border-opacity-30 hover:bg-gold hover:bg-opacity-10 text-gray-300 hover:text-gold transition-all text-xs font-semibold uppercase tracking-wider flex items-center space-x-3 opacity-50 cursor-not-allowed"><i class="fa-solid fa-desktop w-5 text-center"></i><span>The Executive Suite</span></button>
+            </div>
+            <div class="p-4 border-t border-gold border-opacity-15 text-center flex items-center justify-center space-x-2 text-gray-600">
+                <i class="fa-solid fa-hand-pointer text-xs animate-pulse"></i>
+                <span class="text-[9px] uppercase tracking-widest">Swipe Left to Close</span>
+            </div>
+        </div>
+
+        <header id="global-header" class="px-6 py-4 flex items-center justify-between sticky top-0 z-[60] bg-midnight bg-opacity-95 backdrop-blur-lg border-b border-gold border-opacity-20 shrink-0 shadow-md">
+            <div class="flex items-center space-x-3">
+                <!-- Hamburger Button replaces old buttons -->
+                <button id="header-menu-btn" onclick="openSideDrawer()" class="flex items-center justify-center w-8 h-8 rounded-full bg-charcoal border border-gold border-opacity-40 hover-pop transition-all shadow-[0_0_10px_rgba(212,175,55,0.15)] relative">
+                    <i class="fa-solid fa-bars text-gold text-xs"></i>
+                    <!-- Pulse effect to hint it's clickable/draggable -->
+                    <div class="absolute -right-1 -bottom-1 w-2.5 h-2.5 bg-gold rounded-full animate-ping opacity-50"></div>
+                </button>
+
+                <div id="header-logo" class="flex items-center space-x-3 transition-all">
+                    <div class="w-8 h-8 rounded-full border border-gold flex items-center justify-center bg-gradient-to-br from-charcoal to-midnight shadow-[0_0_10px_rgba(212,175,55,0.2)]">
+                        <span class="font-serif text-gold font-bold text-xs">L</span>
+                    </div>
+                    <span class="font-serif text-gold tracking-widest text-sm font-semibold hidden sm:inline-block">LUXEBIZ</span>
+                </div>
+            </div>
+            <div class="flex items-center space-x-1.5 bg-gradient-to-r from-charcoal to-midnight px-3 py-1.5 rounded-full border border-gold border-opacity-30 shadow-[0_0_10px_rgba(212,175,55,0.1)] cursor-default hover-pop">
+                <i class="fa-solid fa-crown text-gold text-[10px] drop-shadow-md"></i>
+                <span id="global-user-rank" class="text-[10px] text-gold font-bold uppercase tracking-wider">Apprentice</span>
+            </div>
+        </header>
+
+        <section id="screen-welcome" class="screen-transition screen-active flex-1 flex-col justify-between p-8 text-center relative overflow-hidden">
+            <div class="my-auto space-y-10">
+                <div class="mx-auto w-28 h-28 rounded-full border-2 border-gold flex items-center justify-center bg-gradient-to-tr from-midnight via-charcoal to-midnight shadow-[0_0_40px_rgba(212,175,55,0.25)] animate-pulse hover-pop relative">
+                    <div class="absolute inset-2 border border-gold border-opacity-30 rounded-full border-dashed"></div>
+                    <span class="font-serif text-gold text-5xl font-bold tracking-widest text-gold-gradient">LB</span>
+                </div>
+                <div class="space-y-5">
+                    <div class="flex items-center justify-center space-x-3 mb-2">
+                        <div class="h-px w-8 bg-gradient-to-r from-transparent to-gold opacity-50"></div>
+                        <h2 class="font-serif text-gold tracking-[0.2em] uppercase text-[10px] font-semibold">The Academy</h2>
+                        <div class="h-px w-8 bg-gradient-to-l from-transparent to-gold opacity-50"></div>
+                    </div>
+                    <h1 id="welcome-text" class="font-serif text-2xl md:text-3xl font-light leading-relaxed text-ivory min-h-[5rem]"></h1>
+                </div>
+                <p class="text-[11px] text-gray-400 font-light max-w-xs mx-auto leading-relaxed">ค้นพบวิถีแห่งความสำเร็จที่ออกแบบมาเพื่อคุณโดยเฉพาะ การเรียนรู้ด้านการเงิน ธุรกิจ และเศรษฐศาสตร์ระดับพรีเมียม</p>
+                <!-- Hint for Swipe Feature -->
+                <p class="text-[9px] text-gold opacity-70 animate-bounce mt-4 tracking-widest"><i class="fa-solid fa-hand-pointer mr-1"></i> เลื่อนขอบซ้ายจอเพื่อเปิดเมนูได้ตลอดเวลา</p>
+            </div>
+            <div class="pb-10 mt-auto pt-8">
+                <button onclick="startJourney()" class="btn-gold-metallic w-full py-4 rounded-full font-semibold text-sm tracking-widest uppercase shadow-2xl">
+                    เริ่มต้นเส้นทางผู้บริหาร <i class="fa-solid fa-chevron-right ml-2 text-xs"></i>
+                </button>
+            </div>
+        </section>
+
+        <section id="screen-subject" class="screen-transition screen-hidden flex-1 flex-col justify-between p-6 overflow-y-auto">
+            <div class="space-y-6 my-auto pb-4">
+                <div class="text-center space-y-3 mb-4">
+                    <h2 class="font-serif text-3xl font-medium text-gold-gradient tracking-wide">The Path of Excellence</h2>
+                    <p class="text-[11px] text-gray-400 font-light uppercase tracking-widest">โปรดเลือกหลักสูตรและระดับเพื่อเริ่มต้น</p>
+                    <div class="gold-divider mt-4"></div>
+                </div>
+
+                <!-- Difficulty Tabs -->
+                <div class="flex bg-charcoal rounded-xl border border-gold border-opacity-30 p-1.5 mb-2 shadow-inner">
+                    <button id="diff-tab-basic" onclick="selectDifficulty('basic')" class="flex-1 py-2.5 rounded-lg text-xs font-bold tracking-widest uppercase transition-all bg-gold text-midnight shadow-md">
+                        <i class="fa-solid fa-seedling mr-1.5"></i> ระดับพื้นฐาน
+                    </button>
+                    <button id="diff-tab-medium" onclick="selectDifficulty('medium')" class="flex-1 py-2.5 rounded-lg text-xs font-bold tracking-widest uppercase transition-all text-gray-400 hover:text-gold">
+                        <i class="fa-solid fa-fire mr-1.5"></i> ระดับปานกลาง
+                    </button>
+                </div>
+                <p id="difficulty-desc" class="text-center text-[10px] text-gold opacity-80 mb-4 font-light tracking-wide">โจทย์ทดสอบ 10 ข้อ เหมาะสำหรับผู้เริ่มต้นปูพื้นฐาน</p>
+
+                <!-- Subject Cards Container -->
+                <div class="space-y-4">
+                    <!-- Business Card -->
+                    <div id="wrapper-business" onclick="selectSubject('business')" class="relative p-[1.5px] rounded-2xl overflow-hidden group cursor-pointer transition-transform duration-300 shrink-0">
+                        <div class="animated-border-layer absolute top-1/2 left-1/2 w-[200%] aspect-square -translate-x-1/2 -translate-y-1/2 bg-[conic-gradient(from_0deg,transparent_0_270deg,#D4AF37_360deg)] opacity-0 transition-opacity duration-300"></div>
+                        <div class="absolute inset-[1.5px] bg-charcoal rounded-2xl z-0"></div> 
+                        <div id="card-business" class="relative z-10 bg-midnight bg-opacity-90 p-4 rounded-2xl h-full border border-gold border-opacity-20 group-hover:border-transparent transition-colors">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-4">
+                                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-charcoal to-midnight flex items-center justify-center border border-gold border-opacity-30 shadow-[0_0_15px_rgba(212,175,55,0.1)] group-hover:scale-110 transition-transform">
+                                        <i class="fa-solid fa-briefcase text-gold text-lg"></i>
+                                    </div>
+                                    <div><h3 class="font-serif text-base font-medium text-ivory group-hover:text-gold transition-colors duration-300">ธุรกิจ (Business)</h3></div>
+                                </div>
+                                <div class="radio-indicator w-5 h-5 rounded-full border border-gold border-opacity-50 flex items-center justify-center shrink-0 bg-midnight"><div class="dot w-2.5 h-2.5 rounded-full bg-gold scale-0 transition-transform duration-300 shadow-[0_0_5px_#D4AF37]"></div></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Finance Card -->
+                    <div id="wrapper-finance" onclick="selectSubject('finance')" class="relative p-[1.5px] rounded-2xl overflow-hidden group cursor-pointer transition-transform duration-300 shrink-0">
+                        <div class="animated-border-layer absolute top-1/2 left-1/2 w-[200%] aspect-square -translate-x-1/2 -translate-y-1/2 bg-[conic-gradient(from_0deg,transparent_0_270deg,#D4AF37_360deg)] opacity-0 transition-opacity duration-300"></div>
+                        <div class="absolute inset-[1.5px] bg-charcoal rounded-2xl z-0"></div>
+                        <div id="card-finance" class="relative z-10 bg-midnight bg-opacity-90 p-4 rounded-2xl h-full border border-gold border-opacity-20 group-hover:border-transparent transition-colors">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-4">
+                                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-charcoal to-midnight flex items-center justify-center border border-gold border-opacity-30 shadow-[0_0_15px_rgba(212,175,55,0.1)] group-hover:scale-110 transition-transform">
+                                        <i class="fa-solid fa-chart-line text-gold text-lg"></i>
+                                    </div>
+                                    <div><h3 class="font-serif text-base font-medium text-ivory group-hover:text-gold transition-colors duration-300">การเงิน (Finance)</h3></div>
+                                </div>
+                                <div class="radio-indicator w-5 h-5 rounded-full border border-gold border-opacity-50 flex items-center justify-center shrink-0 bg-midnight"><div class="dot w-2.5 h-2.5 rounded-full bg-gold scale-0 transition-transform duration-300 shadow-[0_0_5px_#D4AF37]"></div></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Economics Card -->
+                    <div id="wrapper-economics" onclick="selectSubject('economics')" class="relative p-[1.5px] rounded-2xl overflow-hidden group cursor-pointer transition-transform duration-300 shrink-0">
+                        <div class="animated-border-layer absolute top-1/2 left-1/2 w-[200%] aspect-square -translate-x-1/2 -translate-y-1/2 bg-[conic-gradient(from_0deg,transparent_0_270deg,#D4AF37_360deg)] opacity-0 transition-opacity duration-300"></div>
+                        <div class="absolute inset-[1.5px] bg-charcoal rounded-2xl z-0"></div>
+                        <div id="card-economics" class="relative z-10 bg-midnight bg-opacity-90 p-4 rounded-2xl h-full border border-gold border-opacity-20 group-hover:border-transparent transition-colors">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-4">
+                                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-charcoal to-midnight flex items-center justify-center border border-gold border-opacity-30 shadow-[0_0_15px_rgba(212,175,55,0.1)] group-hover:scale-110 transition-transform">
+                                        <i class="fa-solid fa-scale-balanced text-gold text-lg"></i>
+                                    </div>
+                                    <div><h3 class="font-serif text-base font-medium text-ivory group-hover:text-gold transition-colors duration-300">เศรษฐศาสตร์ (Economics)</h3></div>
+                                </div>
+                                <div class="radio-indicator w-5 h-5 rounded-full border border-gold border-opacity-50 flex items-center justify-center shrink-0 bg-midnight"><div class="dot w-2.5 h-2.5 rounded-full bg-gold scale-0 transition-transform duration-300 shadow-[0_0_5px_#D4AF37]"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pt-4 pb-2 space-y-4 shrink-0 relative z-20">
+                <button id="btn-enter-classroom" disabled onclick="enterClassroom()" class="w-full py-4 rounded-full border border-gray-600 bg-transparent text-gray-500 font-semibold text-sm tracking-widest transition-all duration-300 cursor-not-allowed uppercase">
+                    กรุณาเลือกวิชาเรียน
+                </button>
+            </div>
+        </section>
+
+        <section id="screen-pretest" class="screen-transition screen-hidden flex-1 flex-col p-6 overflow-y-auto">
+            <div>
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center space-x-2">
+                        <span id="quiz-diff-badge" class="text-xs text-gray-400 uppercase tracking-widest font-serif font-semibold">Basic</span>
+                        <span id="quiz-progress-text" class="text-[10px] bg-gold bg-opacity-20 text-gold px-2 py-0.5 rounded-full font-bold border border-gold border-opacity-30">1/10</span>
+                    </div>
+                    <div class="flex items-center space-x-1.5 text-gold border border-gold border-opacity-40 px-3 py-1.5 rounded-lg bg-midnight shadow-[0_0_10px_rgba(212,175,55,0.15)] hover-pop cursor-pointer" onclick="openSideDrawer()">
+                        <i class="fa-solid fa-bars text-[10px]"></i>
+                        <span class="font-mono text-xs font-semibold tracking-wider uppercase">Menu</span>
+                    </div>
+                </div>
+                
+                <div class="w-full h-[2px] bg-charcoal rounded-full mb-8 relative overflow-hidden">
+                    <div id="quiz-progress-bar" class="absolute top-0 left-0 h-full bg-gradient-to-r from-goldLight to-goldDark transition-all duration-700 ease-out shadow-[0_0_10px_#D4AF37]" style="width: 0%;"></div>
+                </div>
+
+                <div id="quiz-card" class="bg-charcoal bg-opacity-80 backdrop-blur-sm border border-gold border-opacity-20 p-6 rounded-2xl shadow-[0_10px_30px_rgba(0,0,0,0.5)] shrink-0 transition-all duration-300">
+                    <div class="flex items-center justify-between mb-5">
+                        <span id="quiz-badge" class="inline-block px-2.5 py-1 text-[9px] border border-gold border-opacity-40 bg-gold bg-opacity-5 text-gold rounded-md uppercase tracking-widest font-semibold">Topic</span>
+                        <div id="instant-feedback-icon" class="text-xl opacity-0 transition-opacity duration-300"></div>
+                    </div>
+                    <h2 id="quiz-question" class="font-serif text-lg md:text-xl text-ivory font-medium leading-relaxed mb-6">Loading...</h2>
+                    <div class="gold-divider mb-5 opacity-30"></div>
+                    <div id="quiz-options" class="space-y-3"></div>
+                </div>
+                
+                <div class="flex items-center justify-between gap-4 mt-6 shrink-0">
+                    <button id="quiz-prev-btn" onclick="prevQuizQuestion()" class="hover-pop flex-1 py-3.5 rounded-full border border-gold border-opacity-30 text-gray-300 font-semibold text-xs tracking-widest hover:border-gold hover:text-gold bg-midnight">
+                        <i class="fa-solid fa-arrow-left mr-2"></i> ข้อก่อนหน้า
+                    </button>
+                    <button id="quiz-next-btn" disabled onclick="nextQuizQuestion()" class="hover-pop flex-1 py-3.5 rounded-full btn-gold-metallic text-xs tracking-widest disabled:opacity-50 disabled:cursor-not-allowed transition-all">
+                        ถัดไป <i class="fa-solid fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section id="screen-result" class="screen-transition screen-hidden flex-1 flex-col justify-between p-6 text-center">
+            <div class="my-auto space-y-6 overflow-y-auto max-h-[85vh] pr-1 py-2">
+                <div class="mx-auto w-28 h-28 rounded-full border-2 border-gold flex items-center justify-center bg-gradient-to-tr from-charcoal to-midnight relative shadow-[0_0_50px_rgba(212,175,55,0.2)] animate-pulse hover-pop shrink-0">
+                    <div class="absolute inset-1 border border-gold border-opacity-20 rounded-full border-dashed"></div>
+                    <i class="fa-solid fa-award text-gold text-5xl"></i>
+                    <div class="absolute -bottom-2 bg-gradient-to-r from-goldLight via-gold to-goldDark text-midnight text-[10px] px-4 py-1 rounded-full font-bold uppercase tracking-widest shadow-lg">Assessment</div>
+                </div>
+                <div class="space-y-3 shrink-0">
+                    <h2 class="font-serif text-gold text-[11px] uppercase tracking-widest font-semibold">การประเมินเสร็จสมบูรณ์</h2>
+                    <h1 class="font-serif text-2xl text-gold-gradient">ผลการประเมินของคุณ</h1>
+                    <div class="flex flex-col items-center justify-center space-y-3 mt-4">
+                        <div class="inline-flex items-center space-x-3 bg-midnight bg-opacity-90 px-5 py-2.5 rounded-2xl border border-gold border-opacity-30 hover-pop shadow-lg">
+                            <span class="text-xs text-gray-400 font-serif uppercase tracking-widest">Score</span>
+                            <div class="h-6 w-px bg-gold opacity-30"></div>
+                            <span id="result-score" class="text-xl font-bold text-gold">0/0</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gradient-to-br from-charcoal to-midnight border border-gold border-opacity-20 p-5 rounded-2xl max-w-xs mx-auto hover-pop shadow-[0_5px_15px_rgba(0,0,0,0.5)] shrink-0">
+                    <p class="text-[9px] uppercase text-gold tracking-widest font-serif font-bold mb-1.5">ระดับความเชี่ยวชาญ</p>
+                    <h3 id="result-rank-title" class="font-serif text-xl font-semibold text-ivory mb-2">Rising Star</h3>
+                    <p id="result-rank-desc" class="text-xs text-gray-400 font-light leading-relaxed"></p>
+                </div>
+            </div>
+            <div class="pt-5 pb-2 space-y-3 shrink-0 border-t border-gold border-opacity-15 bg-midnight bg-opacity-95">
+                <button onclick="enterDashboard()" class="hover-pop w-full py-4 rounded-full btn-gold-metallic text-xs font-bold tracking-widest uppercase shadow-lg">
+                    เข้าสู่ The Executive Suite <i class="fa-solid fa-chevron-right ml-2 text-[10px]"></i>
+                </button>
+            </div>
+        </section>
+
+        <section id="screen-dashboard" class="screen-transition screen-hidden flex-1 flex-col p-6 space-y-6 overflow-y-auto">
+            <div class="flex items-center justify-between border-b border-gold border-opacity-15 pb-4 shrink-0">
+                <div>
+                    <h1 class="font-serif text-2xl text-gold-gradient font-medium">The Executive Suite</h1>
+                    <p class="text-[10px] text-gray-400 uppercase tracking-widest mt-1">ยินดีต้อนรับสู่พื้นที่ผู้บริหาร</p>
+                </div>
+                <div class="w-12 h-12 rounded-full border border-gold border-opacity-40 bg-gradient-to-br from-charcoal to-midnight flex items-center justify-center hover-pop cursor-pointer shadow-[0_0_15px_rgba(212,175,55,0.15)]">
+                    <i class="fa-solid fa-user-tie text-gold text-lg"></i>
+                </div>
+            </div>
+            <div class="bg-gradient-to-br from-charcoal to-[#1A1C24] p-6 rounded-2xl border border-gold border-opacity-20 flex items-center justify-between hover-pop cursor-default shadow-lg relative shrink-0">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-gold opacity-5 rounded-full blur-2xl -mr-10 -mt-10 pointer-events-none"></div>
+                <div class="space-y-2 relative z-10">
+                    <span class="text-[10px] text-gold uppercase tracking-widest font-bold">ความคืบหน้าโดยรวม</span>
+                    <h3 class="font-serif text-lg text-ivory leading-tight">สถิติการเรียนรู้ของคุณ</h3>
+                    <p id="dashboard-progress-detail" class="text-xs text-gray-400">เรียนจบแล้ว 0/30 บทเรียน</p>
+                </div>
+                <div class="relative flex items-center justify-center w-20 h-20 z-10 shrink-0">
+                    <svg class="w-full h-full transform -rotate-90 overflow-visible" viewBox="0 0 80 80">
+                        <circle cx="40" cy="40" r="34" stroke="#07090F" stroke-width="5" fill="transparent" />
+                        <circle cx="40" cy="40" r="34" stroke="#D4AF37" stroke-width="5" fill="transparent" stroke-dasharray="213" stroke-dashoffset="213" id="dash-circular-progress" class="transition-all duration-1000 ease-out" stroke-linecap="round"/>
+                    </svg>
+                    <span id="dash-progress-percentage" class="absolute text-sm font-semibold text-gold">0%</span>
+                </div>
+            </div>
+            <div class="space-y-3 shrink-0">
+                <h3 class="font-serif text-[11px] text-gold uppercase tracking-widest border-l-2 border-gold pl-2">The Executive Lounge</h3>
+                <div class="hover-pop bg-midnight bg-opacity-80 p-5 rounded-xl border border-gold border-opacity-15 space-y-3 cursor-pointer shadow-sm relative overflow-hidden" onclick="goToTab('lounge')">
+                    <div class="flex items-center justify-between relative z-10"><span class="text-[10px] font-semibold text-ivory uppercase tracking-wider"><i class="fa-solid fa-fire text-orange-500 text-[10px] mr-1.5 animate-pulse"></i> กระทู้ยอดฮิตวันนี้</span></div>
+                    <p class="text-xs text-gray-400 leading-relaxed font-light line-clamp-2 relative z-10">ร่วมแบ่งปันไอเดียและถกประเด็นธุรกิจกับผู้บริหารท่านอื่นในฟอรัม...</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="screen-academy" class="screen-transition screen-hidden flex-1 flex-col p-6 space-y-6 overflow-y-auto">
+            <div class="text-center border-b border-gold border-opacity-15 pb-4 shrink-0">
+                <h1 class="font-serif text-2xl text-gold-gradient font-medium">The Academy</h1>
+                <p class="text-[10px] text-gray-400 uppercase tracking-widest mt-1">Library of Knowledge (30 Modules)</p>
+            </div>
+            <div class="flex bg-midnight rounded-lg border border-gold border-opacity-20 p-1 shrink-0">
+                <button id="academy-tab-business" onclick="toggleAcademyWing('business')" class="hover-pop flex-1 py-2.5 text-[10px] font-bold tracking-widest rounded-md bg-gold bg-opacity-20 text-gold transition-all uppercase">BUSINESS</button>
+                <button id="academy-tab-finance" onclick="toggleAcademyWing('finance')" class="hover-pop flex-1 py-2.5 text-[10px] font-bold tracking-widest rounded-md bg-transparent text-gray-500 hover:text-gold transition-all uppercase">FINANCE</button>
+                <button id="academy-tab-economics" onclick="toggleAcademyWing('economics')" class="hover-pop flex-1 py-2.5 text-[10px] font-bold tracking-widest rounded-md bg-transparent text-gray-500 hover:text-gold transition-all uppercase">ECONOMICS</button>
+            </div>
+            <div id="academy-modules-container" class="space-y-4 pb-10 shrink-0"></div>
+        </section>
+
+        <section id="screen-lounge" class="screen-transition screen-hidden flex-1 flex-col p-6 space-y-6 overflow-y-auto">
+            <div class="text-center border-b border-gold border-opacity-15 pb-4 shrink-0">
+                <h1 class="font-serif text-2xl text-gold-gradient font-medium">The Executive Lounge</h1>
+                <p class="text-[10px] text-gray-400 uppercase tracking-widest mt-1">Prestige Circle & Forum</p>
+            </div>
+            <div class="space-y-4 pb-8 shrink-0">
+                <div class="flex items-center justify-between">
+                    <h3 class="font-serif text-xs text-gold uppercase tracking-widest border-l-2 border-gold pl-2">ฟอรัมสนทนา (นิรนาม)</h3>
+                    <button onclick="showCreatePostModal()" class="hover-pop text-[10px] text-gold py-1.5 px-3 border border-gold border-opacity-30 rounded-full hover:bg-gold hover:text-midnight font-semibold uppercase tracking-wider transition-colors"><i class="fa-solid fa-pen-fancy mr-1"></i> เขียนกระทู้</button>
+                </div>
+                <div class="space-y-4" id="forum-posts-container">
+                    <!-- Dynamic posts -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Thread Detail -->
+        <section id="screen-thread-detail" class="screen-transition screen-hidden flex-1 flex-col justify-between p-6">
+            <div class="flex-1 overflow-y-auto space-y-5 pr-1 pb-4">
+                <div class="flex items-center justify-between border-b border-gold border-opacity-15 pb-3">
+                    <button onclick="goToTab('lounge')" class="hover-pop flex items-center space-x-1.5 text-xs text-gold p-1 font-semibold uppercase tracking-wider">
+                        <i class="fa-solid fa-chevron-left text-[10px]"></i><span>กลับ Lounge</span>
+                    </button>
+                    <span class="text-[9px] text-gray-400 uppercase tracking-widest font-serif">Exclusive Thread</span>
+                </div>
+                <div class="bg-gradient-to-br from-charcoal to-midnight p-5 rounded-2xl border border-gold border-opacity-20 space-y-4 hover-pop cursor-default shadow-lg shrink-0">
+                    <div class="flex items-center justify-between">
+                        <span id="detail-thread-author" class="text-[11px] text-gold font-semibold"><i class="fa-solid fa-user-secret mr-1"></i> Anonymous</span>
+                        <span id="detail-thread-time" class="text-[9px] text-gray-400"></span>
+                    </div>
+                    <h2 id="detail-thread-title" class="font-serif text-lg text-ivory font-semibold leading-relaxed">หัวข้อ</h2>
+                    <div class="gold-divider opacity-20"></div>
+                    <p id="detail-thread-body" class="text-xs text-gray-300 font-light leading-relaxed whitespace-pre-wrap">เนื้อหา</p>
+                    <div class="flex items-center justify-between border-t border-gold border-opacity-15 pt-4 mt-2">
+                        <button id="detail-like-btn" onclick="toggleLikeActiveThread()" class="hover-pop flex items-center space-x-2 text-xs text-gold">
+                            <i id="detail-like-icon" class="fa-regular fa-heart text-sm"></i>
+                            <span id="detail-likes-count" class="font-medium">0 ถูกใจ</span>
+                        </button>
+                        <span id="detail-comments-count" class="text-xs text-gray-400"><i class="fa-regular fa-comment mr-1"></i> 0 ความเห็น</span>
+                    </div>
+                </div>
+                <h3 class="font-serif text-[11px] text-gold uppercase tracking-widest flex items-center justify-between mt-6 border-l-2 border-gold pl-2">
+                    <span>ความเห็น</span><span id="detail-comments-badge" class="text-[9px] bg-midnight text-gold px-2.5 py-0.5 rounded-full border border-gold border-opacity-30"></span>
+                </h3>
+                <div id="thread-comments-list" class="space-y-3 pb-2 shrink-0"></div>
+            </div>
+            <div class="pt-4 border-t border-gold border-opacity-15 shrink-0 bg-midnight bg-opacity-95 backdrop-blur-md">
+                <div class="flex items-center gap-2.5">
+                    <input type="text" id="comment-input" class="flex-1 bg-charcoal border border-gold border-opacity-30 rounded-full px-5 py-3.5 text-xs text-ivory focus:outline-none focus:border-gold transition-colors" placeholder="แสดงความเห็น...">
+                    <button onclick="submitComment()" class="hover-pop w-12 h-12 flex items-center justify-center btn-gold-metallic rounded-full text-midnight text-sm shrink-0"><i class="fa-solid fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </section>
+
+        <section id="screen-vault" class="screen-transition screen-hidden flex-1 flex-col p-6 space-y-6 overflow-y-auto">
+            <div class="text-center border-b border-gold border-opacity-15 pb-4 shrink-0">
+                <h1 class="font-serif text-2xl text-gold-gradient font-medium">The Vault</h1>
+                <p class="text-[10px] text-gray-400 uppercase tracking-widest mt-1">Treasury & Credentials</p>
+            </div>
+            <div class="bg-gradient-to-br from-[#12141D] to-midnight p-6 rounded-2xl border border-gold border-opacity-30 text-center space-y-5 hover-pop shadow-[0_10px_25px_rgba(0,0,0,0.6)] relative shrink-0">
+                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-goldLight via-gold to-goldDark rounded-t-2xl"></div>
+                <div class="relative w-24 h-24 mx-auto mt-2">
+                    <div class="w-full h-full rounded-full border-2 border-gold flex items-center justify-center bg-charcoal shadow-[0_0_20px_rgba(212,175,55,0.2)]">
+                        <i class="fa-solid fa-user-graduate text-gold text-4xl"></i>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="font-serif text-xl text-gold-gradient font-medium">Exclusive Member</h3>
+                    <p class="text-[11px] text-gray-400 mt-1 tracking-widest font-mono">ID: LUX-2026-9981</p>
+                </div>
+                <div class="grid grid-cols-2 gap-4 border-t border-gold border-opacity-15 pt-5 text-center">
+                    <div>
+                        <p class="text-[9px] text-gray-500 uppercase tracking-widest mb-1">ระดับ</p>
+                        <p id="vault-rank-badge" class="text-xs font-bold text-gold uppercase">Apprentice</p>
+                    </div>
+                    <div>
+                        <p class="text-[9px] text-gray-500 uppercase tracking-widest mb-1">ความสำเร็จ</p>
+                        <p id="vault-courses-count" class="text-xs font-bold text-gold uppercase">0 โมดูล</p>
+                    </div>
+                </div>
+            </div>
+            <div class="space-y-4 pb-8 shrink-0">
+                <h3 class="font-serif text-[11px] text-gold uppercase tracking-widest border-l-2 border-gold pl-2"><i class="fa-solid fa-certificate mr-1"></i> Certificates Earned</h3>
+                <div id="certificates-container" class="space-y-3"></div>
+            </div>
+        </section>
+
+        <nav id="bottom-nav" class="hidden glass-nav sticky bottom-0 left-0 right-0 z-50 flex justify-around py-3.5 px-2 transition-all duration-300 transform translate-y-full shadow-[0_-5px_20px_rgba(0,0,0,0.5)] shrink-0">
+            <button onclick="goToTab('dashboard')" id="nav-dashboard" class="hover-pop flex flex-col items-center space-y-1.5 text-gold">
+                <i class="fa-solid fa-desktop text-lg"></i><span class="text-[9px] tracking-widest uppercase font-semibold">Suite</span>
+            </button>
+            <button onclick="goToTab('academy')" id="nav-academy" class="hover-pop flex flex-col items-center space-y-1.5 text-gray-500">
+                <i class="fa-solid fa-graduation-cap text-lg"></i><span class="text-[9px] tracking-widest uppercase font-semibold">Academy</span>
+            </button>
+            <button onclick="goToTab('lounge')" id="nav-lounge" class="hover-pop flex flex-col items-center space-y-1.5 text-gray-500">
+                <i class="fa-solid fa-glass-cheers text-lg"></i><span class="text-[9px] tracking-widest uppercase font-semibold">Lounge</span>
+            </button>
+            <button onclick="goToTab('vault')" id="nav-vault" class="hover-pop flex flex-col items-center space-y-1.5 text-gray-500">
+                <i class="fa-solid fa-vault text-lg"></i><span class="text-[9px] tracking-widest uppercase font-semibold">Vault</span>
+            </button>
+        </nav>
+
+    </main>
+
+    <div id="premium-toast" class="fixed top-6 left-1/2 transform -translate-x-1/2 z-[70] bg-midnight border border-gold border-opacity-50 px-6 py-3.5 rounded-full shadow-[0_10px_30px_rgba(212,175,55,0.3)] flex items-center space-x-3 pointer-events-none opacity-0 transition-all duration-400">
+        <i class="fa-solid fa-bell text-gold animate-bounce"></i>
+        <span id="toast-message" class="text-[11px] text-ivory font-medium tracking-wide uppercase">ข้อความ</span>
+    </div>
+
+    <div id="post-modal" class="fixed inset-0 z-[70] bg-black bg-opacity-80 backdrop-blur-sm flex items-center justify-center p-6 hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-gradient-to-b from-charcoal to-midnight border border-gold border-opacity-40 p-6 rounded-2xl max-w-sm w-full space-y-5 transform scale-95 transition-transform duration-300 shadow-[0_0_40px_rgba(212,175,55,0.15)]" id="post-modal-content">
+            <div class="flex justify-between items-center border-b border-gold border-opacity-15 pb-3">
+                <h3 class="font-serif text-xs text-gold uppercase tracking-widest"><i class="fa-solid fa-pen-fancy mr-1"></i> ตั้งกระทู้พรีเมียม</h3>
+                <button onclick="closePostModal()" class="hover-pop text-gray-400 hover:text-gold p-1 text-lg"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="space-y-4">
+                <input type="text" id="post-title" class="w-full bg-midnight border border-gold border-opacity-30 rounded-xl p-3.5 text-xs text-ivory focus:outline-none focus:border-gold transition-colors shadow-inner" placeholder="ระบุหัวข้อบทสนทนา...">
+                <textarea id="post-body" class="w-full bg-midnight border border-gold border-opacity-30 rounded-xl p-3.5 text-xs text-ivory focus:outline-none focus:border-gold h-28 transition-colors shadow-inner resize-none" placeholder="แบ่งปันแนวคิดของคุณที่นี่ (ไม่ระบุตัวตน)..."></textarea>
+            </div>
+            <button onclick="submitPost()" class="hover-pop w-full py-3.5 btn-gold-metallic text-xs font-bold tracking-widest uppercase rounded-xl transition-all">เผยแพร่กระทู้</button>
+        </div>
+    </div>
+
+    <div id="lesson-modal" class="fixed inset-0 z-[70] bg-black bg-opacity-80 backdrop-blur-sm flex items-center justify-center p-6 hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-gradient-to-b from-charcoal to-midnight border border-gold border-opacity-40 p-6 rounded-2xl max-w-sm w-full space-y-5 relative transform scale-95 transition-transform duration-300 shadow-[0_0_40px_rgba(212,175,55,0.15)]" id="lesson-modal-content">
+            <button onclick="closeLessonModal()" class="absolute top-5 right-5 text-gray-400 hover:text-gold text-lg p-1 hover-pop z-10"><i class="fa-solid fa-xmark"></i></button>
+            <div class="text-center pt-2">
+                <span class="text-[9px] border border-gold border-opacity-40 bg-gold bg-opacity-5 text-gold px-3 py-1 rounded-full uppercase tracking-widest font-semibold">The Academy</span>
+                <h3 id="lesson-title" class="font-serif text-xl text-gold-gradient mt-4 mb-2 font-medium">ชื่อบทเรียน</h3>
+                <p id="lesson-desc" class="text-[11px] text-gray-400 leading-relaxed font-light mb-4 px-2"></p>
+            </div>
+            <div class="border border-gold border-opacity-20 bg-[#07090F] rounded-xl p-5 flex flex-col space-y-4 shadow-inner max-h-72 overflow-y-auto">
+                <p class="text-[10px] text-gold tracking-widest uppercase font-semibold flex items-center gap-2 border-b border-gold border-opacity-15 pb-3">
+                    <i class="fa-regular fa-file-lines text-sm"></i> บทความสรุปแบบพรีเมียม
+                </p>
+                <div id="lesson-text-content" class="text-xs text-gray-300 leading-relaxed font-light space-y-3 whitespace-pre-wrap"></div>
+            </div>
+            <button onclick="completeLesson()" class="hover-pop w-full py-3.5 btn-gold-metallic text-xs font-bold tracking-widest uppercase rounded-xl transition-all">รับประกาศนียบัตร</button>
+        </div>
+    </div>
+
+    <script>
+        // --- STREAMING_CHUNK:Audio & Particles Setup... ---
+        let audioCtx = null;
+        function playPremiumClick(type = 'click') {
+            try {
+                if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
+                osc.connect(gain); gain.connect(audioCtx.destination);
+                
+                if (type === 'click') {
+                    osc.type = 'sine'; osc.frequency.setValueAtTime(800, audioCtx.currentTime); osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.05);
+                    gain.gain.setValueAtTime(0.05, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
+                    osc.start(); osc.stop(audioCtx.currentTime + 0.05);
+                } else if (type === 'success' || type === 'correct') {
+                    osc.type = 'triangle'; osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); osc.frequency.setValueAtTime(880, audioCtx.currentTime + 0.1); 
+                    gain.gain.setValueAtTime(0.08, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+                    osc.start(); osc.stop(audioCtx.currentTime + 0.3);
+                } else if (type === 'wrong') {
+                    osc.type = 'sawtooth'; osc.frequency.setValueAtTime(150, audioCtx.currentTime); osc.frequency.exponentialRampToValueAtTime(80, audioCtx.currentTime + 0.2);
+                    gain.gain.setValueAtTime(0.08, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+                    osc.start(); osc.stop(audioCtx.currentTime + 0.2);
+                } else if (type === 'congrats') {
+                    osc.type = 'sine'; [523.25, 659.25, 783.99, 1046.50].forEach((f, i) => osc.frequency.setValueAtTime(f, audioCtx.currentTime + (i*0.1)));
+                    gain.gain.setValueAtTime(0.1, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.6);
+                    osc.start(); osc.stop(audioCtx.currentTime + 0.6);
+                }
+            } catch (err) { }
+        }
+
+        const canvas = document.getElementById('particles-canvas'); const ctx = canvas.getContext('2d'); let particles = [];
+        function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        window.addEventListener('resize', resizeCanvas); resizeCanvas();
+        class GoldParticle {
+            constructor() {
+                this.x = Math.random() * canvas.width; this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 1.5 + 0.5; this.speedX = Math.random() * 0.1 - 0.05; this.speedY = Math.random() * 0.1 - 0.05;
+                this.alpha = Math.random() * 0.3 + 0.05; this.pulseSpeed = Math.random() * 0.005 + 0.002;
+            }
+            update() {
+                this.x += this.speedX; this.y += this.speedY; this.alpha += this.pulseSpeed;
+                if (this.alpha > 0.5 || this.alpha < 0.05) this.pulseSpeed = -this.pulseSpeed;
+                if (this.x < 0 || this.x > canvas.width) this.speedX = -this.speedX; if (this.y < 0 || this.y > canvas.height) this.speedY = -this.speedY;
+            }
+            draw() {
+                ctx.save(); ctx.globalAlpha = this.alpha; ctx.fillStyle = '#D4AF37'; ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+            }
+        }
+        function initParticles() { particles = []; const count = Math.min(40, Math.floor((canvas.width * canvas.height) / 15000)); for (let i = 0; i < count; i++) particles.push(new GoldParticle()); }
+        initParticles(); function animateParticles() { ctx.clearRect(0, 0, canvas.width, canvas.height); particles.forEach(p => { p.update(); p.draw(); }); requestAnimationFrame(animateParticles); }
+        animateParticles();
+
+        // --- STREAMING_CHUNK:App State & Large Data Setup... ---
+        const AppState = {
+            currentScreen: 'welcome',
+            history: [],
+            selectedSubject: null,
+            selectedDifficulty: 'basic',
+            quizProgress: 0,
+            quizAnswers: [],
+            isAnswerSubmitted: false,
+            score: 0,
+            timerInterval: null,
+            secondsElapsed: 0,
+            userRank: 'Apprentice',
+            hasEnteredSuite: false,
+            unlockedCertificates: [],
+            activeThreadId: null,
+            forumPosts: [
+                { id: 1, author: "Anonymous Elite Member #92", title: "มุมมองวิกฤตเศรษฐกิจและการลงทุนส่วนตัวในปีนี้", body: "ผมแนะนำให้ทุกคนแบ่งเงินออมส่วนหนึ่งเก็บเป็นเงินสดเพื่อฉุกเฉิน และนำส่วนที่เหลือไปลงทุนในสินทรัพย์ที่กระจายความเสี่ยงให้ดีครับ ช่วงนี้ตลาดค่อนข้างผันผวน ใครมีไอเดียอะไรบ้างครับ?", likes: 24, userLiked: false, comments: [{author: "Anonymous #104", text: "เห็นด้วยเลยครับ เงินสดคือพระเจ้าในช่วงวิกฤต", timestamp: new Date(Date.now() - 3000000)}], timestamp: new Date(Date.now() - 7200000) }
+            ]
+        };
+
+        const academyModules = {
+            business: [
+                { t: "1. Business Blueprint", d: "การออกแบบโครงสร้างธุรกิจด้วย Business Model Canvas", c: "การทำธุรกิจไม่ใช่แค่มีของมาขาย แต่คือการตอบโจทย์ว่า 'เราแก้ปัญหาอะไรให้ลูกค้า' และทำอย่างไรให้ได้กำไรคุ้มเหนื่อย โครงสร้างที่ดีคือรากฐานของความมั่นคง แผนภาพ Business Model Canvas จะช่วยให้คุณเห็นภาพรวมทั้งหมดในหน้าเดียว ทั้งกลุ่มเป้าหมาย ต้นทุน และรายได้" },
+                { t: "2. Value Proposition", d: "การหาจุดขายที่แตกต่างและโดนใจลูกค้า", c: "คุณค่าที่ส่งมอบ (Value Proposition) คือเหตุผลที่ลูกค้าเลือกคุณแทนที่จะเป็นคู่แข่ง สินค้าของคุณช่วยลดความเจ็บปวด (Pain) หรือสร้างประโยชน์ (Gain) อะไรให้ลูกค้าได้บ้าง? แบรนด์ที่ดีจะขายตัวเองได้ผ่านความประทับใจของลูกค้า" },
+                { t: "3. Market Analysis", d: "การวิเคราะห์คู่แข่งและกลุ่มเป้าหมายเชิงลึก", c: "การรู้เขารู้เรา รบกี่ครั้งก็ชนะ การวิเคราะห์ตลาดคือการศึกษาพฤติกรรมลูกค้า (Target Market) และจุดแข็งจุดอ่อนของคู่แข่ง (Competitor Analysis) เพื่อหาช่องว่างในตลาดที่คุณสามารถเข้าไปครอบครองได้ (Niche Market)" },
+                { t: "4. Marketing Strategy", d: "กลยุทธ์การตลาดและการสร้างแบรนด์", c: "การตลาดไม่ใช่แค่การยิงโฆษณา แต่คือกระบวนการทำให้คน 'รู้จัก ชอบ และเชื่อใจ' ส่วนผสมทางการตลาด (4Ps: Product, Price, Place, Promotion) เป็นเพียงพื้นฐาน ในยุคนี้คุณต้องเน้นการสร้างตัวตน (Branding) ให้ลูกค้ารู้สึกผูกพันกับคุณ" },
+                { t: "5. Sales Mastery", d: "เทคนิคการปิดการขายและรักษาฐานลูกค้า", c: "พนักงานขายที่เก่งที่สุดคือคนที่ 'ฟัง' มากกว่า 'พูด' การขายคือการช่วยลูกค้าแก้ปัญหา เมื่อคุณนำเสนอทางออกที่ตรงจุด ลูกค้าจะยินดีจ่ายเงินให้คุณ นอกจากนี้ การรักษาลูกค้าเก่า (Retention) มีต้นทุนถูกกว่าการหาลูกค้าใหม่เสมอ" },
+                { t: "6. Financial Management", d: "การจัดการงบประมาณและกระแสเงินสดสำหรับธุรกิจ", c: "กระแสเงินสด (Cash Flow) เปรียบเสมือนเส้นเลือดของธุรกิจ ธุรกิจส่วนใหญ่ไม่ได้เจ๊งเพราะขาดทุน แต่เจ๊งเพราะหมุนเงินไม่ทัน ผู้บริหารต้องอ่านงบการเงินเป็น และแยกให้ออกระหว่างเงินของบริษัทกับเงินส่วนตัว" },
+                { t: "7. Operations & Logistics", d: "การบริหารจัดการหลังบ้านให้ไหลลื่น", c: "ระบบหลังบ้าน (Operations) คือฟันเฟืองที่ทำให้ธุรกิจขับเคลื่อนไปได้ ตั้งแต่การจัดซื้อวัตถุดิบ การผลิต การเก็บสต๊อก (Inventory) จนถึงการจัดส่งให้ถึงมือลูกค้า ระบบที่ดีจะช่วยลดต้นทุนและเพิ่มความพึงพอใจ" },
+                { t: "8. Human Resources", d: "การสร้างทีมเวิร์คและรักษาคนเก่งไว้กับองค์กร", c: "พนักงานคือทรัพย์สิน (Asset) ที่มีค่าที่สุดขององค์กร ไม่ใช่เครื่องจักร หน้าที่ของ HR ไม่ใช่แค่หาคนมาทำงาน แต่คือการพัฒนาสวัสดิการ วัฒนธรรมองค์กร (Culture) และสร้างแรงจูงใจให้คนเก่งอยากอยู่กับคุณไปนานๆ" },
+                { t: "9. Legal & Compliance", d: "กฎหมายเบื้องต้นที่เจ้าของธุรกิจต้องรู้", c: "การทำธุรกิจมีความเสี่ยงทางกฎหมายเสมอ คุณต้องรู้เรื่องการจดทะเบียนบริษัท ภาษีนิติบุคคล กฎหมายแรงงาน และลิขสิทธิ์/ทรัพย์สินทางปัญญา การทำทุกอย่างให้ถูกต้องตั้งแต่แรกจะป้องกันปัญหาใหญ่โตในอนาคตได้" },
+                { t: "10. Scaling & Innovation", d: "การขยายสเกลและการเติบโตอย่างยั่งยืน", c: "เมื่อธุรกิจตั้งตัวได้ ขั้นต่อไปคือการขยาย (Scaling) คุณอาจเลือกการเปิดสาขาใหม่ ขายแฟรนไชส์ หรือขยายฐานลูกค้าไปต่างประเทศ แต่สิ่งสำคัญคือต้องมีนวัตกรรม (Innovation) เพื่อไม่ให้ถูกคู่แข่งหรือเทคโนโลยีทิ้งไว้ข้างหลัง" }
+            ],
+            finance: [
+                { t: "1. Wealth Allocation", d: "ศิลปะแห่งการจัดสรรความมั่งคั่ง", c: "สูตรออมระดับมาตรฐานคือแบ่งเงินเป็น 3 ก้อน: ของจำเป็น (Needs) 50%, ความสุขส่วนตัว (Wants) 30%, และเก็บออมเพื่ออนาคต (Savings) 20% วินัยคือหัวใจสำคัญของการมีอิสรภาพทางการเงิน" },
+                { t: "2. Power of Compounding", d: "ปาฏิหาริย์แห่งดอกเบี้ยทบต้น สิ่งมหัศจรรย์ของโลก", c: "อัลเบิร์ต ไอน์สไตน์ เคยกล่าวไว้ว่า 'ดอกเบี้ยทบต้นคือสิ่งมหัศจรรย์อันดับ 8 ของโลก' ยิ่งคุณเริ่มเก็บเงินและลงทุนเร็วเท่าไหร่ เงินก็จะยิ่งงอกเงยเป็นทวีคูณ การลงทุนด้วย 'เวลา' สำคัญพอๆ กับจำนวนเงิน" },
+                { t: "3. Risk & Return", d: "การประเมินความเสี่ยงก่อนการลงทุน", c: "High Risk, High Return คือกฎทองของการเงิน ไม่มีผลตอบแทนสูงใดที่มาพร้อมความเสี่ยงต่ำ คุณต้องประเมินความสามารถในการรับความเสี่ยงของตัวเองก่อนลงทุน และใช้หลักการ 'กระจายความเสี่ยง' (Diversification) เสมอ" },
+                { t: "4. Stock Market 101", d: "พื้นฐานการลงทุนในตลาดหลักทรัพย์ (หุ้น)", c: "การซื้อหุ้นคือการที่คุณเข้าไปเป็น 'เจ้าของร่วม' ในกิจการนั้นๆ ผลตอบแทนจะได้มาจากส่วนต่างราคา (Capital Gain) และเงินปันผล (Dividend) สิ่งสำคัญคือการวิเคราะห์มูลค่าบริษัท ไม่ใช่แค่ตามอารมณ์ตลาด" },
+                { t: "5. Fixed Income", d: "ตราสารหนี้และพันธบัตรรัฐบาล", c: "หากคุณไม่ชอบความเสี่ยงสูง ตราสารหนี้ (เช่น พันธบัตรรัฐบาล หุ้นกู้เอกชน) เป็นทางเลือกที่ดี เพราะคุณมีสถานะเป็น 'เจ้าหนี้' และได้รับผลตอบแทนเป็นดอกเบี้ยที่แน่นอนตามระยะเวลาที่กำหนด" },
+                { t: "6. Mutual Funds", d: "ให้ผู้เชี่ยวชาญทำงานแทนด้วยกองทุนรวม", c: "กองทุนรวมคือการนำเงินของนักลงทุนหลายๆ คนมารวมกัน แล้วให้ผู้จัดการกองทุนมืออาชีพนำไปลงทุนตามนโยบายที่ตกลงไว้ เหมาะสำหรับคนที่มีเวลาน้อยหรือเพิ่งเริ่มต้นลงทุน เพราะได้กระจายความเสี่ยงอย่างเป็นระบบ" },
+                { t: "7. Real Estate", d: "การลงทุนอสังหาริมทรัพย์เพื่อปล่อยเช่า", c: "อสังหาริมทรัพย์เป็นสินทรัพย์ที่จับต้องได้และมักมีมูลค่าเพิ่มขึ้นตามกาลเวลา การลงทุนปล่อยเช่าช่วยสร้างรายได้แบบ Passive Income อย่างต่อเนื่อง แต่อย่าลืมคำนวณเรื่องสภาพคล่องและค่าบำรุงรักษาด้วย" },
+                { t: "8. Tax Strategy", d: "วางแผนภาษีเพื่อประหยัดเงินอย่างถูกกฎหมาย", c: "ภาษีคือค่าใช้จ่ายก้อนใหญ่ของทุกคน การวางแผนภาษี (Tax Planning) ไม่ใช่การเลี่ยงภาษี แต่คือการใช้สิทธิประโยชน์ต่างๆ ที่รัฐมอบให้ เช่น กองทุนลดหย่อน ประกันชีวิต เพื่อรักษาความมั่งคั่งไว้กับตัวคุณให้มากที่สุด" },
+                { t: "9. Insurance Planning", d: "การจัดการความเสี่ยงด้วยประกันภัย", c: "การลงทุนจะไม่มีความหมายเลยถ้าคุณต้องหมดเงินไปกับค่ารักษาพยาบาลหรืออุบัติเหตุ ประกันชีวิตและประกันสุขภาพคือ 'โล่ป้องกัน' ความเสี่ยงทางการเงินที่รับประกันว่าแผนการเงินของคุณจะไม่ล้มครืนเมื่อเกิดเหตุไม่คาดฝัน" },
+                { t: "10. Behavioral Finance", d: "จิตวิทยาพฤติกรรมการเงิน", c: "มนุษย์มักตัดสินใจเรื่องเงินด้วย 'อารมณ์' มากกว่า 'เหตุผล' ความโลภ (Greed) และความกลัว (Fear) คือสิ่งที่ควบคุมตลาด การเข้าใจจิตวิทยาการลงทุนจะช่วยให้คุณมีสติและไม่ขาดทุนจากความตื่นตระหนก" }
+            ],
+            economics: [
+                { t: "1. Market Equilibrium", d: "จุดสมดุลของอุปสงค์ (Demand) และ อุปทาน (Supply)", c: "ทุกสิ่งในระบบเศรษฐกิจถูกควบคุมด้วยความต้องการซื้อ (Demand) และความต้องการขาย (Supply) เมื่อสินค้ามีน้อยแต่คนต้องการมาก ราคาจะพุ่งสูงขึ้น แต่เมื่อราคาดึงดูดจนคนแห่มาผลิตเยอะเกินไป ราคาก็จะตกลงจนเข้าสู่จุดสมดุล" },
+                { t: "2. Opportunity Cost", d: "ต้นทุนค่าเสียโอกาส", c: "เพราะทรัพยากรบนโลกมีจำกัด ทุกการตัดสินใจจึงมี 'ราคา' ที่ต้องจ่าย ค่าเสียโอกาสคือสิ่งที่ดีที่สุดที่คุณต้องยอมสละไปเมื่อคุณเลือกอีกทางเลือกหนึ่ง เช่น การใช้เวลาไปดูหนัง คือการเสียโอกาสในการนำเวลานั้นไปอ่านหนังสือพัฒนาตัวเอง" },
+                { t: "3. Micro vs Macro", d: "เศรษฐศาสตร์มหภาคและจุลภาค", c: "เศรษฐศาสตร์จุลภาค (Micro) ศึกษาพฤติกรรมระดับบุคคลและบริษัท เช่น การตั้งราคาสินค้า ส่วนเศรษฐศาสตร์มหภาค (Macro) ศึกษาภาพรวมระดับประเทศหรือโลก เช่น อัตราการว่างงาน GDP และเงินเฟ้อ" },
+                { t: "4. Inflation Mechanics", d: "ทำไมของถึงแพงขึ้น (เงินเฟ้อ) และเงินฝืด", c: "เงินเฟ้อ (Inflation) เกิดขึ้นเมื่อปริมาณเงินในระบบมีมากเกินไป หรือต้นทุนการผลิตสูงขึ้น ทำให้ค่าของเงินลดลง เงิน 100 บาทในวันนี้ซื้อของได้น้อยกว่าในอดีต ในขณะที่เงินฝืด (Deflation) คือภาวะที่คนชะลอการใช้จ่ายจนของราคาตก ซึ่งอันตรายไม่แพ้กัน" },
+                { t: "5. Monetary Policy", d: "กลไกการควบคุมเงินของธนาคารกลาง", c: "ธนาคารกลาง (เช่น แบงก์ชาติ) มีหน้าที่ดูแลเสถียรภาพทางการเงิน เครื่องมือหลักคือ 'อัตราดอกเบี้ยนโยบาย' หากเศรษฐกิจแย่ จะลดดอกเบี้ยให้คนกู้ไปลงทุน หากเศรษฐกิจร้อนแรงเกินไป จะขึ้นดอกเบี้ยเพื่อลดความร้อนแรงลง" },
+                { t: "6. Fiscal Policy", d: "นโยบายการคลังของรัฐบาล", c: "นโยบายการคลังคือการที่รัฐบาลใช้ 'การเก็บภาษี' และ 'การใช้จ่ายของรัฐ' เพื่อกระตุ้นเศรษฐกิจ เช่น การสร้างถนน แจกเงินช่วยเหลือ หรือการลดภาษี เพื่อให้เงินหมุนเวียนในระบบเศรษฐกิจมากขึ้น" },
+                { t: "7. International Trade", d: "ผลประโยชน์จากการค้าระหว่างประเทศ", c: "ไม่มีประเทศใดเก่งทุกเรื่อง การค้าระหว่างประเทศเกิดขึ้นตามหลักความได้เปรียบโดยเปรียบเทียบ (Comparative Advantage) ประเทศต่างๆ จะมุ่งผลิตสิ่งที่ตนเองถนัดและมีต้นทุนต่ำที่สุด แล้วนำมาแลกเปลี่ยนกัน ทำให้ทุกคนได้ประโยชน์ร่วมกัน" },
+                { t: "8. Market Structures", d: "โครงสร้างตลาดและการแข่งขัน", c: "ตลาดมีหลายรูปแบบ ตั้งแต่ 'ตลาดแข่งขันสมบูรณ์' ที่ผู้ขายตั้งราคาเองไม่ได้ ไปจนถึง 'ตลาดผูกขาด' ที่มีผู้ขายรายเดียวซึ่งมีอำนาจต่อรองสูงสุด การเข้าใจโครงสร้างตลาดจะช่วยให้ธุรกิจรู้จุดยืนของตัวเอง" },
+                { t: "9. Game Theory", d: "ทฤษฎีเกมในการตัดสินใจและเจรจาต่อรอง", c: "ทฤษฎีเกมเป็นการศึกษาคณิตศาสตร์และจิตวิทยาเบื้องหลังการตัดสินใจเชิงกลยุทธ์ เมื่อผลลัพธ์ของคุณขึ้นอยู่กับการกระทำของฝ่ายตรงข้าม (เช่น การแข่งกันลดราคาของคู่แข่ง) การคาดเดาความเคลื่อนไหวของอีกฝ่ายคือหัวใจของชัยชนะ" },
+                { t: "10. Economic Indicators", d: "การอ่านตัวชี้วัดเศรษฐกิจ (GDP)", c: "GDP (ผลิตภัณฑ์มวลรวมในประเทศ) คือมาตรวัดขนาดเศรษฐกิจ หาก GDP โต แสดงว่าเศรษฐกิจดี การเข้าใจตัวชี้วัดอื่นๆ เช่น ดุลการค้า หรือดัชนีความเชื่อมั่นผู้บริโภค จะช่วยให้คุณคาดการณ์แนวโน้มธุรกิจและการลงทุนได้แม่นยำขึ้น" }
+            ]
+        };
+
+        const quizData = {
+            basic: {
+                business: [
+                    { q: "ธุรกิจ (Business) คืออะไร?", correct: 0, opts: ["การซื้อขายแลกเปลี่ยนสินค้าและบริการเพื่อหวังผลกำไร", "การบริจาคสิ่งของให้มูลนิธิฟรี", "การใช้จ่ายเงินส่วนตัวในแต่ละวัน", "การเรียนหนังสือในโรงเรียน"] },
+                    { q: "ลูกค้า (Customer) คือใคร?", correct: 1, opts: ["คนที่ผลิตสินค้าออกมาขาย", "คนที่ซื้อหรือใช้บริการของเรา", "พนักงานที่ทำงานในบริษัท", "เจ้าของบริษัท"] },
+                    { q: "กำไร (Profit) เกิดจากอะไร?", correct: 2, opts: ["ยอดขายทั้งหมดมารวมกัน", "เงินเดือนที่เราได้รับ", "รายได้ทั้งหมด หักลบด้วย ต้นทุน", "การกู้ยืมเงินจากธนาคารมาลงทุน"] },
+                    { q: "การตลาด (Marketing) มีเป้าหมายหลักเพื่ออะไร?", correct: 2, opts: ["เพื่อเพิ่มต้นทุนให้สูงขึ้น", "เพื่อประหยัดค่าใช้จ่ายบริษัท", "เพื่อทำให้ลูกค้ารู้จัก สนใจ และอยากซื้อสินค้า", "เพื่อให้พนักงานได้พักผ่อนมากขึ้น"] },
+                    { q: "โปรโมชั่น (Promotion) ทำไปเพื่ออะไร?", correct: 0, opts: ["เพื่อกระตุ้นยอดขายและดึงดูดใจลูกค้า", "เพื่อลดคุณภาพของสินค้า", "เพื่อให้ราคาสินค้าแพงขึ้น", "เพื่อให้ลูกค้าเบื่อสินค้า"] },
+                    { q: "ต้นทุน (Cost) คืออะไร?", correct: 1, opts: ["เงินที่ได้จากการขายของ", "เงินที่ต้องจ่ายไปเพื่อผลิตสินค้าหรือให้บริการ", "เงินโบนัสปลายปี", "เงินที่ลูกค้าจ่ายทิป"] },
+                    { q: "คู่แข่ง (Competitor) ในทางธุรกิจหมายถึงใคร?", correct: 0, opts: ["ธุรกิจอื่นที่ขายสินค้าคล้ายกันและกลุ่มเป้าหมายเดียวกัน", "ลูกค้าที่มาซื้อของบ่อยๆ", "พนักงานที่ทำงานเก่งที่สุด", "ผู้ที่ส่งวัตถุดิบให้เรา"] },
+                    { q: "แบรนด์ (Brand) เปรียบเสมือนอะไรของธุรกิจ?", correct: 1, opts: ["จำนวนเครื่องจักรในโรงงาน", "ชื่อเสียงและภาพจำในใจของลูกค้า", "เงินสดทั้งหมดที่มีในบัญชี", "ป้ายราคาที่ติดบนสินค้า"] },
+                    { q: "CEO ย่อมาจากตำแหน่งอะไร?", correct: 2, opts: ["พนักงานฝึกหัด", "หัวหน้าฝ่ายบุคคล", "ประธานเจ้าหน้าที่บริหาร", "ผู้จัดการร้าน"] },
+                    { q: "สินค้าคงคลัง (Inventory) คืออะไร?", correct: 0, opts: ["สินค้าที่เก็บไว้ในสต๊อกเพื่อรอการขาย", "สินค้าที่ขายไปหมดแล้ว", "เงินทอนที่เตรียมไว้", "ป้ายโฆษณาหน้าร้าน"] }
+                ],
+                finance: [
+                    { q: "รายรับ (Income) คืออะไร?", correct: 1, opts: ["เงินที่เราต้องจ่ายให้คนอื่น", "เงินที่เราได้รับเข้ามาจากการทำงานหรือทำธุรกิจ", "ของแถมที่เราได้จากการซื้อของ", "เงินที่เรากู้มาจากธนาคาร"] },
+                    { q: "รายจ่าย (Expense) คืออะไร?", correct: 0, opts: ["เงินที่เราต้องจ่ายออกไปเพื่อซื้อสิ่งของหรือบริการ", "เงินเดือนที่เราได้", "กำไรจากการขายของ", "ดอกเบี้ยที่ธนาคารให้เรา"] },
+                    { q: "เงินออม (Savings) เกิดจากอะไร?", correct: 2, opts: ["เงินที่ไปขอยืมเพื่อน", "เงินทั้งหมดที่เราหามาได้", "รายรับที่เหลือ หลังจากหักรายจ่ายแล้ว", "เงินที่เรานำไปซื้อของฟุ่มเฟือย"] },
+                    { q: "ดอกเบี้ยเงินฝาก (Deposit Interest) คืออะไร?", correct: 0, opts: ["ผลตอบแทนที่ธนาคารจ่ายให้เรา เมื่อเรานำเงินไปฝาก", "เงินที่เราต้องจ่ายเพิ่มเมื่อคืนเงินกู้", "ค่าธรรมเนียมบัตรเอทีเอ็ม", "เงินที่เราทำหาย"] },
+                    { q: "เงินเฟ้อ (Inflation) ส่งผลอย่างไรต่อเรา?", correct: 1, opts: ["ทำให้เราซื้อของได้มากขึ้นด้วยเงินเท่าเดิม", "ทำให้ข้าวของแพงขึ้น เงินเท่าเดิมจะซื้อของได้น้อยลง", "ทำให้เงินเดือนเราลดลง", "ทำให้ราคาสินค้าทุกอย่างถูกลงเรื่อยๆ"] },
+                    { q: "หนี้สิน (Debt) เกิดจากอะไร?", correct: 2, opts: ["การเก็บเงินออมไว้ในธนาคาร", "การซื้อของด้วยเงินสดของตัวเอง", "การยืมเงินผู้อื่นมาใช้ก่อน และต้องคืนพร้อมดอกเบี้ย", "การลงทุนในตลาดหุ้น"] },
+                    { q: "การลงทุน (Investment) คืออะไร?", correct: 1, opts: ["การเอาเงินไปซื้อของเล่น", "การนำเงินไปต่อยอด หวังให้งอกเงยและได้ผลตอบแทนในอนาคต", "การซ่อนเงินไว้ใต้เตียง", "การเอาเงินไปจ่ายหนี้"] },
+                    { q: "บัตรเครดิต (Credit Card) มีหลักการทำงานอย่างไร?", correct: 0, opts: ["นำเงินในอนาคตมาจ่ายค่าสินค้าไปก่อน แล้วค่อยจ่ายคืนบัตรทีหลัง", "เป็นบัตรที่กดเงินฟรีโดยไม่ต้องคืน", "เป็นบัตรสะสมแต้มเวลาเล่นเกม", "เป็นบัตรสำหรับให้เพื่อนยืมเงิน"] },
+                    { q: "งบประมาณ (Budget) ทำเพื่ออะไร?", correct: 2, opts: ["เพื่อเอาไว้โชว์เพื่อน", "เพื่อใช้เงินให้หมดเร็วที่สุด", "เพื่อวางแผนการรับเงินและใช้จ่ายเงินล่วงหน้าให้สมดุล", "เพื่อขอกู้เงินธนาคารให้ได้เยอะๆ"] },
+                    { q: "สินทรัพย์ (Asset) คืออะไร?", correct: 0, opts: ["สิ่งที่เราครอบครอง มีมูลค่า และสามารถเปลี่ยนเป็นเงินได้", "หนี้ที่เราต้องชดใช้", "ค่าใช้จ่ายรายวัน", "บิลค่าน้ำค่าไฟ"] }
+                ],
+                economics: [
+                    { q: "อุปสงค์ (Demand) คืออะไร?", correct: 1, opts: ["ความต้องการที่จะขายสินค้า", "ความต้องการและมีกำลังซื้อสินค้าหรือบริการนั้น", "การขึ้นราคาสินค้า", "การลดราคาสินค้า"] },
+                    { q: "อุปทาน (Supply) คืออะไร?", correct: 0, opts: ["ปริมาณสินค้าที่ผู้ผลิตต้องการเสนอขายในตลาด", "ปริมาณสินค้าที่ลูกค้าอยากซื้อ", "ภาษีที่ต้องจ่ายรัฐ", "การโฆษณาสินค้า"] },
+                    { q: "เมื่อสินค้าขาดตลาด แต่คนต้องการซื้อเยอะ ราคาจะเป็นอย่างไร?", correct: 2, opts: ["ราคาจะถูกลง", "ราคาจะไม่เปลี่ยนแปลง", "ราคาจะสูงขึ้น (แพงขึ้น)", "รัฐบาลจะแจกฟรี"] },
+                    { q: "ปัญหาพื้นฐานทางเศรษฐศาสตร์คือความขัดแย้งระหว่างสิ่งใด?", correct: 1, opts: ["คนรวย กับ คนจน", "ทรัพยากรที่มีอยู่อย่างจำกัด กับ ความต้องการที่ไม่มีที่สิ้นสุด", "รัฐบาล กับ ประชาชน", "พนักงานขาย กับ ลูกค้า"] },
+                    { q: "ต้นทุนค่าเสียโอกาส (Opportunity Cost) คืออะไร?", correct: 2, opts: ["เงินที่ทำหล่นหายไป", "ต้นทุนค่ารถที่ใช้เดินทางไปทำงาน", "สิ่งที่ดีที่สุดที่เราต้องยอมสละไป เมื่อเราเลือกอีกทางเลือกหนึ่ง", "เงินที่ต้องจ่ายเป็นค่าปรับ"] },
+                    { q: "ตลาดผูกขาด (Monopoly) คือตลาดแบบใด?", correct: 0, opts: ["ตลาดที่มีผู้ขายเพียงรายเดียว ไม่มีใครมาแข่งขันด้วย", "ตลาดที่มีคนขายเยอะมาก", "ตลาดนัดขายของมือสอง", "ตลาดที่ขายเฉพาะผักผลไม้"] },
+                    { q: "ภาษี (Tax) คืออะไร?", correct: 1, opts: ["เงินทอนจากการซื้อของ", "เงินที่ประชาชนและธุรกิจต้องจ่ายให้รัฐบาล", "กำไรจากการทำธุรกิจ", "เงินกู้ยืมเพื่อการศึกษา"] },
+                    { q: "ค่าจ้าง (Wage) คือผลตอบแทนของใคร?", correct: 0, opts: ["ผู้ใช้แรงงานหรือพนักงาน", "เจ้าของที่ดิน", "เจ้าของเงินทุน", "ผู้ประกอบการ"] },
+                    { q: "GDP (ผลิตภัณฑ์มวลรวมในประเทศ) ใช้เป็นตัววัดอะไร?", correct: 2, opts: ["จำนวนประชากรในประเทศ", "ปริมาณฝนที่ตกในรอบปี", "ขนาดและรายได้รวมของเศรษฐกิจภายในประเทศ", "จำนวนนักท่องเที่ยวต่างชาติ"] },
+                    { q: "การนำเข้า (Import) สินค้า คือการทำอะไร?", correct: 1, opts: ["การนำสินค้าในประเทศไปขายต่างประเทศ", "การซื้อสินค้าจากต่างประเทศเข้ามาในประเทศ", "การผลิตสินค้าใช้เองในบ้าน", "การขนส่งสินค้าข้ามจังหวัด"] }
+                ]
+            },
+            medium: {
+                business: [
+                    { q: "B2B ย่อมาจากอะไรในวงการธุรกิจ?", correct: 1, opts: ["Back to Basics", "Business to Business", "Brand to Buyer", "Build to Buy"] },
+                    { q: "ข้อใดคือความหมายของ 'Target Market'?", correct: 2, opts: ["ตลาดสดขนาดใหญ่", "สถานที่ตั้งของร้านค้า", "กลุ่มลูกค้าเป้าหมายที่ธุรกิจต้องการขายสินค้าให้", "ยอดขายเป้าหมายของปี"] },
+                    { q: "Cash Flow (กระแสเงินสด) สำคัญอย่างไร?", correct: 0, opts: ["เป็นเส้นเลือดหล่อเลี้ยงธุรกิจ หากขาดไปธุรกิจจะหยุดชะงัก", "เป็นตัวบอกว่าพนักงานทำงานดีแค่ไหน", "ใช้สำหรับจ่ายภาษีเท่านั้น", "ไม่สำคัญเท่ากับยอดไลค์ในโซเชียล"] },
+                    { q: "SWOT Analysis ตัว 'W' ย่อมาจากอะไร?", correct: 2, opts: ["Wealth", "Work", "Weaknesses (จุดอ่อน)", "Worth"] },
+                    { q: "ROI (Return on Investment) ใช้คำนวณเพื่ออะไร?", correct: 1, opts: ["คำนวณวันหยุดพนักงาน", "วัดผลตอบแทนที่ได้กลับมาจากการลงทุนว่าคุ้มค่าหรือไม่", "คำนวณราคาสินค้าป้ายแดง", "วัดความเร็วในการจัดส่งสินค้า"] },
+                    { q: "Niche Market หมายถึงตลาดแบบใด?", correct: 0, opts: ["ตลาดเฉพาะกลุ่มที่มีความต้องการเฉพาะเจาะจง", "ตลาดมวลชนที่ทุกคนซื้อเหมือนกัน", "ตลาดมืดที่ผิดกฎหมาย", "ตลาดนัดกลางคืน"] },
+                    { q: "ข้อใดคือหน้าที่ของฝ่าย HR (Human Resources)?", correct: 2, opts: ["ซ่อมบำรุงคอมพิวเตอร์", "ทำบัญชีรายรับรายจ่าย", "สรรหา พัฒนา และดูแลสวัสดิการของพนักงาน", "ผลิตสินค้าในโรงงาน"] },
+                    { q: "Franchise (แฟรนไชส์) คืออะไร?", correct: 1, opts: ["การแจกสินค้าฟรีให้คนทดลองใช้", "รูปแบบธุรกิจที่ให้สิทธิผู้อื่นใช้ชื่อแบรนด์และระบบในการขาย", "การร่วมหุ้นกับบริษัทต่างชาติ", "การขายกิจการทิ้งทั้งหมด"] },
+                    { q: "Break-Even Point (จุดคุ้มทุน) คืออะไร?", correct: 0, opts: ["จุดที่รายได้รวมเท่ากับต้นทุนรวมพอดี (ไม่ขาดทุน ไม่กำไร)", "จุดที่ได้กำไรสูงสุดในรอบปี", "จุดที่ธุรกิจล้มละลาย", "จุดสิ้นสุดสัญญาเช่าพื้นที่"] },
+                    { q: "KPI (Key Performance Indicator) มีไว้ทำไม?", correct: 2, opts: ["เพื่อใช้เป็นรหัสผ่านเข้าออฟฟิศ", "เพื่อเป็นชื่อเรียกย่อของบริษัท", "เพื่อเป็นดัชนีชี้วัดความสำเร็จของงานหรือเป้าหมาย", "เพื่อลดภาษี"] }
+                ],
+                finance: [
+                    { q: "สภาพคล่อง (Liquidity) หมายถึงอะไรทางการเงิน?", correct: 1, opts: ["ปริมาณน้ำในร่างกาย", "ความง่ายและรวดเร็วในการเปลี่ยนสินทรัพย์ให้กลายเป็นเงินสด", "การที่ธนาคารให้กู้เงินง่าย", "การละลายของทองคำ"] },
+                    { q: "ข้อใดคือสินทรัพย์สภาพคล่องสูงที่สุด?", correct: 0, opts: ["เงินสด", "บ้านและที่ดิน", "รถยนต์", "เครื่องประดับเพชร"] },
+                    { q: "ดอกเบี้ยทบต้น (Compound Interest) มีหลักการอย่างไร?", correct: 2, opts: ["จ่ายดอกเบี้ยครั้งเดียวตอนจบ", "ได้ดอกเบี้ยเท่าเดิมทุกปี", "คิดดอกเบี้ยจากเงินต้น รวมกับดอกเบี้ยงวดก่อนๆ ที่สะสมไว้", "หักดอกเบี้ยออกจากเงินต้น"] },
+                    { q: "หนี้เสีย (NPL) คืออะไร?", correct: 1, opts: ["หนี้ที่เราลืมจด", "หนี้ที่ผู้กู้ไม่ยอมจ่ายคืนตามกำหนดจนเกินระยะเวลาที่ตั้งไว้", "หนี้ที่เกิดจากการเล่นพนัน", "การจ่ายหนี้เร็วกว่ากำหนด"] },
+                    { q: "การกระจายความเสี่ยง (Diversification) เปรียบเหมือนสำนวนใด?", correct: 0, opts: ["อย่าใส่ไข่ทั้งหมดไว้ในตะกร้าใบเดียว", "ขี่ช้างจับตั๊กแตน", "น้ำขึ้นให้รีบตัก", "จับปลาสองมือ"] },
+                    { q: "กองทุนรวม (Mutual Fund) เหมาะกับใคร?", correct: 2, opts: ["คนที่อยากเสี่ยงสูงมากๆ", "คนที่มีเวลาเฝ้าหน้าจอหุ้นทั้งวัน", "คนที่อยากลงทุนแต่ไม่มีเวลาบริหารเอง จึงให้มืออาชีพจัดการให้", "คนที่ต้องการถอนเงินทุกๆ 1 ชั่วโมง"] },
+                    { q: "คำว่า 'Bear Market' (ตลาดหมี) หมายถึงสภาวะตลาดหุ้นแบบใด?", correct: 1, opts: ["ตลาดหุ้นที่กำลังขึ้นอย่างรุนแรง", "ตลาดหุ้นที่กำลังซบเซาและราคาตกต่ำลง", "ตลาดหุ้นที่เปิดเฉพาะหน้าหนาว", "ตลาดที่นักลงทุนหน้าใหม่เข้ามาเยอะ"] },
+                    { q: "คำว่า 'Bull Market' (ตลาดกระทิง) หมายถึงสภาวะตลาดหุ้นแบบใด?", correct: 0, opts: ["ตลาดหุ้นที่คึกคักและราคากำลังปรับตัวสูงขึ้น", "ตลาดหุ้นที่เงียบเหงา", "ตลาดค้าสัตว์", "ตลาดที่ถูกสั่งปิด"] },
+                    { q: "Net Worth (ความมั่งคั่งสุทธิ) คำนวณอย่างไร?", correct: 2, opts: ["รายรับ ลบ รายจ่าย", "เงินเดือน คูณ 12 เดือน", "สินทรัพย์ทั้งหมด หักลบด้วย หนี้สินทั้งหมด", "มูลค่าบ้าน รวมกับ รถยนต์"] },
+                    { q: "Emergency Fund (เงินสำรองฉุกเฉิน) ควรมีไว้อย่างน้อยเท่าไหร่?", correct: 0, opts: ["3-6 เท่าของค่าใช้จ่ายรายเดือน", "100 บาท", "10 เท่าของรายได้รายปี", "ไม่ต้องมีก็ได้"] }
+                ],
+                economics: [
+                    { q: "Microeconomics (เศรษฐศาสตร์จุลภาค) ศึกษาเกี่ยวกับอะไร?", correct: 1, opts: ["ภาพรวมเศรษฐกิจระดับประเทศ", "พฤติกรรมของผู้ผลิตและผู้บริโภครายย่อย การกำหนดราคาสินค้า", "การค้าระหว่างประเทศ", "นโยบายการเงินของรัฐบาล"] },
+                    { q: "Macroeconomics (เศรษฐศาสตร์มหภาค) ศึกษาเกี่ยวกับอะไร?", correct: 0, opts: ["ภาพรวมเศรษฐกิจ เช่น เงินเฟ้อ อัตราการว่างงาน GDP", "การตัดสินใจซื้อผักของแม่บ้าน", "การตั้งราคากาแฟของร้านหน้าปากซอย", "กำไรของบริษัทใดบริษัทหนึ่ง"] },
+                    { q: "ตลาดแข่งขันสมบูรณ์ (Perfect Competition) มีลักษณะอย่างไร?", correct: 2, opts: ["มีผู้ขายน้อยราย", "สินค้าผูกขาดตั้งราคาเองได้", "มีผู้ซื้อผู้ขายจำนวนมาก สินค้าเหมือนกันเป๊ะ ไม่มีใครตั้งราคาเองได้", "รัฐบาลเป็นผู้ขายรายเดียว"] },
+                    { q: "ตลาดผู้ขายน้อยราย (Oligopoly) ตัวอย่างในไทยที่เห็นชัดคือธุรกิจใด?", correct: 1, opts: ["ร้านขายข้าวแกง", "เครือข่ายโทรศัพท์มือถือ หรือ ธุรกิจน้ำมัน", "ร้านตัดผม", "แผงขายลอตเตอรี่"] },
+                    { q: "ธนาคารกลาง (ในไทยคือ แบงก์ชาติ) มีหน้าที่หลักอะไร?", correct: 0, opts: ["ดูแลเสถียรภาพทางการเงินของประเทศ ควบคุมอัตราดอกเบี้ยนโยบาย", "ปล่อยกู้ให้ประชาชนทั่วไปสร้างบ้าน", "รับฝากเงินจากเด็กนักเรียน", "จัดเก็บภาษีอากร"] },
+                    { q: "นโยบายการเงินแบบผ่อนคลาย (ลดดอกเบี้ย) มักทำไปเพื่ออะไร?", correct: 2, opts: ["เพื่อกระตุ้นให้คนออมเงินมากขึ้น", "เพื่อลดราคาสินค้าให้ถูกลง", "เพื่อกระตุ้นเศรษฐกิจที่ซบเซา ให้คนอยากกู้เงินไปลงทุนและใช้จ่าย", "เพื่อเพิ่มหนี้สาธารณะ"] },
+                    { q: "สินค้าทดแทนกันได้ (Substitute Goods) คือสินค้าคู่ใด?", correct: 1, opts: ["รถยนต์ กับ น้ำมัน", "เนื้อหมู กับ เนื้อไก่ (ถ้าราคาสิ่งหนึ่งแพง คนจะสลับไปกินอีกสิ่ง)", "สมาร์ทโฟน กับ เคสโทรศัพท์", "ปากกา กับ หมึกพิมพ์"] },
+                    { q: "สินค้าประกอบกัน (Complementary Goods) คือสินค้าคู่ใด?", correct: 0, opts: ["รถยนต์ กับ น้ำมัน (ต้องใช้คู่กัน)", "โค้ก กับ เป๊ปซี่", "ข้าว กับ ก๋วยเตี๋ยว", "แว่นตา กับ คอนแทคเลนส์"] },
+                    { q: "อัตราการว่างงาน (Unemployment Rate) สูง บ่งบอกถึงสภาวะใด?", correct: 2, opts: ["เศรษฐกิจกำลังเติบโตอย่างร้อนแรง", "รัฐบาลเก็บภาษีได้มาก", "เศรษฐกิจตกต่ำ ภาคธุรกิจไม่ต้องการจ้างงาน", "ประเทศกำลังขาดแคลนแรงงาน"] },
+                    { q: "เงินฝืด (Deflation) เกิดขึ้นเมื่อใด?", correct: 1, opts: ["เมื่อราคาสินค้าเพิ่มขึ้นอย่างรวดเร็ว", "เมื่อราคาสินค้าและบริการลดลงอย่างต่อเนื่อง คนชะลอการใช้จ่ายเพราะรอของถูกลงอีก", "เมื่อรัฐบาลพิมพ์เงินออกมามากเกินไป", "เมื่อคนแย่งกันซื้อของ"] }
+                ]
+            }
+        };
+
+        // --- STREAMING_CHUNK:Swipe Navigation Logic... ---
+        let touchStartX = 0; let touchEndX = 0;
+        const handleSwipe = () => {
+            if (AppState.currentScreen === 'pretest') return; // ห้ามปัดตอนทำข้อสอบ
+            const swipeDist = touchEndX - touchStartX;
+            if (swipeDist > 60 && touchStartX < 40) { openSideDrawer(); } // ปัดขวาจากขอบจอ
+            else if (swipeDist < -60) { closeSideDrawer(); } // ปัดซ้ายปิด
+        };
+        // รองรับทั้งระบบทัชบนมือถือและเมาส์บนคอมพิวเตอร์
+        document.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, {passive: true});
+        document.addEventListener('touchend', e => { touchEndX = e.changedTouches[0].screenX; handleSwipe(); });
+        document.addEventListener('mousedown', e => { touchStartX = e.screenX; });
+        document.addEventListener('mouseup', e => { touchEndX = e.screenX; handleSwipe(); });
+
+        function openSideDrawer() {
+            if (AppState.currentScreen === 'pretest') return;
+            document.getElementById('side-drawer-overlay').classList.remove('hidden');
+            setTimeout(() => {
+                document.getElementById('side-drawer-overlay').classList.remove('opacity-0');
+                document.getElementById('side-drawer').classList.remove('-translate-x-full');
+            }, 10); playPremiumClick('click');
+        }
+        function closeSideDrawer() {
+            document.getElementById('side-drawer-overlay').classList.add('opacity-0'); document.getElementById('side-drawer').classList.add('-translate-x-full');
+            setTimeout(() => document.getElementById('side-drawer-overlay').classList.add('hidden'), 300);
+        }
+        function drawerNavigate(screenId) {
+            if (screenId === 'dashboard' && !AppState.hasEnteredSuite) { showPremiumToast('ทำข้อสอบให้จบเพื่อปลดล็อค Executive Suite'); return; }
+            closeSideDrawer(); setTimeout(() => changeScreen(screenId), 300);
+        }
+
+        // --- STREAMING_CHUNK:UI Control & Navigation... ---
+        window.onload = function() {
+            const txt = "ยินดีต้อนรับเข้าสู่ The Academy แหล่งเรียนรู้ด้านการเงิน ธุรกิจ และเศรษฐศาสตร์ระดับพรีเมียม เพื่อความสำเร็จที่ยั่งยืน"; let i = 0; const el = document.getElementById('welcome-text');
+            function type() { if (i < txt.length) { el.innerHTML = txt.substring(0, i + 1) + "<span class='typewriter-cursor'></span>"; i++; setTimeout(type, 35); } else el.innerHTML = txt; } type();
+        };
+
+        function showPremiumToast(text) {
+            const toast = document.getElementById('premium-toast'); document.getElementById('toast-message').innerText = text;
+            toast.style.opacity = '1'; toast.style.transform = 'translate(-50%, 0) scale(1)';
+            setTimeout(() => { toast.style.opacity = '0'; toast.style.transform = 'translate(-50%, -10px) scale(0.95)'; }, 3000);
+        }
+
+        function changeScreen(screenId, animateDir = 'forward') {
+            playPremiumClick('click');
+            const curr = document.getElementById(`screen-${AppState.currentScreen}`); const targ = document.getElementById(`screen-${screenId}`);
+            if (curr) { curr.classList.remove('screen-active'); curr.classList.add('screen-hidden'); }
+            if (targ) { setTimeout(() => { targ.classList.remove('screen-hidden'); targ.classList.add('screen-active'); }, 50); }
+            if (animateDir === 'forward') AppState.history.push(AppState.currentScreen); AppState.currentScreen = screenId;
+
+            // Header Logo & Hamburger
+            const menuBtn = document.getElementById('header-menu-btn'); const logoSection = document.getElementById('header-logo');
+            if (['subject', 'pretest', 'thread-detail'].includes(screenId)) {
+                logoSection.classList.add('hidden'); // ซ่อนโลโก้ในหน้าย่อยเพื่อให้มีพื้นที่
+            } else { logoSection.classList.remove('hidden'); }
+
+            // Suite Button in Drawer Unlock status
+            const drawerSuiteBtn = document.getElementById('drawer-suite-btn');
+            if (AppState.hasEnteredSuite) drawerSuiteBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+
+            // Bottom Nav
+            const phase2Screens = ['dashboard', 'academy', 'lounge', 'vault', 'thread-detail']; const bottomNav = document.getElementById('bottom-nav');
+            if (phase2Screens.includes(screenId)) {
+                bottomNav.classList.remove('hidden'); setTimeout(() => bottomNav.classList.remove('translate-y-full'), 50);
+                document.querySelectorAll('#bottom-nav button').forEach(b => { b.classList.remove('text-gold'); b.classList.add('text-gray-500'); });
+                const activeId = screenId === 'thread-detail' ? 'lounge' : screenId; const activeNavBtn = document.getElementById(`nav-${activeId}`);
+                if(activeNavBtn) { activeNavBtn.classList.add('text-gold'); activeNavBtn.classList.remove('text-gray-500'); }
+            } else { bottomNav.classList.add('translate-y-full'); setTimeout(() => bottomNav.classList.add('hidden'), 300); }
+        }
+
+        function navigateBack() { if (AppState.history.length > 0) changeScreen(AppState.history.pop(), 'backward'); }
+        function startJourney() { changeScreen('subject'); }
+
+        // --- STREAMING_CHUNK:Quiz System... ---
+        function selectDifficulty(diff) {
+            playPremiumClick('click'); AppState.selectedDifficulty = diff;
+            const btnB = document.getElementById('diff-tab-basic'); const btnM = document.getElementById('diff-tab-medium'); const desc = document.getElementById('difficulty-desc');
+            if(diff === 'basic') {
+                btnB.classList.replace('text-gray-400', 'text-midnight'); btnB.classList.replace('hover:text-gold', 'bg-gold'); btnB.classList.add('bg-gold', 'shadow-md');
+                btnM.classList.replace('text-midnight', 'text-gray-400'); btnM.classList.remove('bg-gold', 'shadow-md'); btnM.classList.add('hover:text-gold');
+                desc.innerText = "โจทย์ทดสอบ 10 ข้อ เหมาะสำหรับผู้เริ่มต้นปูพื้นฐาน";
+            } else {
+                btnM.classList.replace('text-gray-400', 'text-midnight'); btnM.classList.replace('hover:text-gold', 'bg-gold'); btnM.classList.add('bg-gold', 'shadow-md');
+                btnB.classList.replace('text-midnight', 'text-gray-400'); btnB.classList.remove('bg-gold', 'shadow-md'); btnB.classList.add('hover:text-gold');
+                desc.innerText = "โจทย์ทดสอบความเข้มข้น เจาะลึกความเข้าใจ 10 ข้อ";
+            }
+        }
+
+        function selectSubject(sub) {
+            playPremiumClick('click'); AppState.selectedSubject = sub;
+            ['business', 'finance', 'economics'].forEach(s => {
+                const w = document.getElementById(`wrapper-${s}`); const c = document.getElementById(`card-${s}`); const a = w.querySelector('.animated-border-layer');
+                if (s === sub) { w.classList.add('scale-[1.03]'); c.classList.remove('bg-opacity-90'); c.classList.add('bg-opacity-100', 'border-transparent'); a.classList.remove('opacity-0'); a.classList.add('opacity-100'); c.querySelector('.dot').classList.remove('scale-0'); }
+                else { w.classList.remove('scale-[1.03]'); c.classList.add('bg-opacity-90'); c.classList.remove('bg-opacity-100', 'border-transparent'); a.classList.add('opacity-0'); a.classList.remove('opacity-100'); c.querySelector('.dot').classList.add('scale-0'); }
+            });
+            const btn = document.getElementById('btn-enter-classroom'); btn.disabled = false; btn.innerText = "เข้าทำโจทย์ประเมินผล"; btn.className = "hover-pop w-full py-4 rounded-full btn-gold-metallic text-xs font-bold tracking-widest uppercase cursor-pointer transition-all shadow-xl";
+        }
+
+        function enterClassroom() {
+            const tQ = quizData[AppState.selectedDifficulty][AppState.selectedSubject].length;
+            AppState.quizProgress = 0; AppState.quizAnswers = Array(tQ).fill(null); AppState.isAnswerSubmitted = false;
+            document.getElementById('quiz-diff-badge').innerText = AppState.selectedDifficulty;
+            setupQuizQuestion(); changeScreen('pretest');
+        }
+
+        function setupQuizQuestion() {
+            const list = quizData[AppState.selectedDifficulty][AppState.selectedSubject]; const tQ = list.length; const q = list[AppState.quizProgress];
+            document.getElementById('quiz-progress-text').innerText = `${AppState.quizProgress + 1}/${tQ}`;
+            setTimeout(() => document.getElementById('quiz-progress-bar').style.width = `${((AppState.quizProgress + 1) / tQ) * 100}%`, 50);
+            const titles = { business: "Business Core", finance: "Finance Core", economics: "Economics Core" }; document.getElementById('quiz-badge').innerText = titles[AppState.selectedSubject]; document.getElementById('quiz-question').innerText = q.q;
+
+            const iconF = document.getElementById('instant-feedback-icon');
+            if(AppState.isAnswerSubmitted) {
+                iconF.classList.remove('opacity-0');
+                if(AppState.quizAnswers[AppState.quizProgress] === q.correct) iconF.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-400"></i>';
+                else iconF.innerHTML = '<i class="fa-solid fa-circle-xmark text-rose-400"></i>';
+            } else iconF.classList.add('opacity-0');
+
+            const optsDiv = document.getElementById('quiz-options'); optsDiv.innerHTML = '';
+            q.opts.forEach((o, i) => {
+                const isS = AppState.quizAnswers[AppState.quizProgress] === i; const isC = i === q.correct;
+                const btn = document.createElement('button'); let style = 'border-gold border-opacity-20 bg-midnight hover:border-opacity-50 text-gray-300'; let html = '';
+                
+                if (AppState.isAnswerSubmitted) {
+                    btn.disabled = true;
+                    if (isC) { style = 'border-emerald-500 bg-emerald-900 bg-opacity-20 text-emerald-400 font-medium shadow-[0_0_15px_rgba(16,185,129,0.15)] ans-correct'; html = '<i class="fa-solid fa-check text-emerald-400 text-sm"></i>'; }
+                    else if (isS) { style = 'border-rose-500 bg-rose-900 bg-opacity-20 text-rose-300 ans-wrong'; html = '<i class="fa-solid fa-xmark text-rose-400 text-sm"></i>'; }
+                    else style = 'border-gray-700 bg-midnight bg-opacity-50 text-gray-600 opacity-50 cursor-not-allowed';
+                } else { btn.onclick = () => selectQuizAnswer(i); btn.classList.add('hover-pop'); }
+
+                btn.className = `w-full text-left p-4 rounded-xl border text-xs transition-all flex items-center justify-between shrink-0 ${style}`;
+                btn.innerHTML = `<div class="flex items-center space-x-4"><span class="w-7 h-7 rounded-lg bg-charcoal text-gray-400 border border-gold border-opacity-20 font-bold flex items-center justify-center text-[11px] shrink-0">${String.fromCharCode(65 + i)}</span><span class="leading-relaxed">${o}</span></div><div class="shrink-0 ml-2">${html}</div>`;
+                optsDiv.appendChild(btn);
+            });
+            const nBtn = document.getElementById('quiz-next-btn'); nBtn.disabled = !AppState.isAnswerSubmitted;
+            if(AppState.isAnswerSubmitted) { nBtn.classList.remove('opacity-50', 'cursor-not-allowed'); nBtn.classList.add('hover-pop'); } else { nBtn.classList.add('opacity-50', 'cursor-not-allowed'); nBtn.classList.remove('hover-pop'); }
+            nBtn.innerHTML = AppState.quizProgress === tQ - 1 ? `ดูผลประเมิน <i class="fa-solid fa-check ml-2"></i>` : `ถัดไป <i class="fa-solid fa-arrow-right ml-2"></i>`;
+        }
+
+        function selectQuizAnswer(idx) {
+            if (AppState.isAnswerSubmitted) return;
+            AppState.quizAnswers[AppState.quizProgress] = idx; AppState.isAnswerSubmitted = true;
+            const q = quizData[AppState.selectedDifficulty][AppState.selectedSubject][AppState.quizProgress];
+            if (idx === q.correct) playPremiumClick('correct'); else playPremiumClick('wrong');
+            setupQuizQuestion();
+        }
+        function nextQuizQuestion() { const l = quizData[AppState.selectedDifficulty][AppState.selectedSubject]; if (AppState.quizProgress < l.length - 1) { AppState.quizProgress++; AppState.isAnswerSubmitted = AppState.quizAnswers[AppState.quizProgress] !== null; playPremiumClick('click'); setupQuizQuestion(); } else calculateQuizResult(); }
+        function prevQuizQuestion() { if (AppState.quizProgress > 0) { AppState.quizProgress--; AppState.isAnswerSubmitted = AppState.quizAnswers[AppState.quizProgress] !== null; playPremiumClick('click'); setupQuizQuestion(); } }
+
+        function calculateQuizResult() {
+            const list = quizData[AppState.selectedDifficulty][AppState.selectedSubject]; let score = 0;
+            list.forEach((q, i) => { if (AppState.quizAnswers[i] === q.correct) score++; }); AppState.score = score;
+            let rank = 'Apprentice'; let desc = 'เริ่มต้นได้ดี หมั่นทบทวนอีกนิด'; const p = score / list.length;
+            if (p >= 0.8) { rank = 'Rising Star'; desc = 'ยอดเยี่ยมมาก! พื้นฐานคุณแน่นหนา พร้อมเข้าสู่บทเรียนเชิงลึก'; } else if (p >= 0.5) { rank = 'Scholar'; desc = 'เกณฑ์ดี! คุณพอมีความเข้าใจโครงสร้างหลักแล้ว'; }
+            
+            AppState.userRank = rank; document.getElementById('global-user-rank').innerText = rank; document.getElementById('vault-rank-badge').innerText = rank;
+            document.getElementById('result-score').innerText = `${score}/${list.length}`; document.getElementById('result-rank-title').innerText = rank; document.getElementById('result-rank-desc').innerText = desc;
+            playPremiumClick('success'); changeScreen('result');
+        }
+
+        // --- STREAMING_CHUNK:Phase 2 Features (Dashboard, Academy, Forum)... ---
+        function enterDashboard() { AppState.hasEnteredSuite = true; changeScreen('dashboard'); playPremiumClick('congrats'); showPremiumToast('Welcome to The Executive Suite.'); }
+        function goToTab(tabId) { changeScreen(tabId); if (tabId === 'academy') toggleAcademyWing('business'); else if (tabId === 'lounge') renderForumPosts(); else if (tabId === 'vault') updateVaultStats(); }
+
+        function toggleAcademyWing(wing) {
+            playPremiumClick('click');
+            ['business', 'finance', 'economics'].forEach(w => { const btn = document.getElementById(`academy-tab-${w}`); if (w === wing) { btn.classList.add('bg-gold', 'bg-opacity-20', 'text-gold'); btn.classList.remove('bg-transparent', 'text-gray-500'); } else { btn.classList.remove('bg-gold', 'bg-opacity-20', 'text-gold'); btn.classList.add('bg-transparent', 'text-gray-500'); } });
+            const c = document.getElementById('academy-modules-container'); c.innerHTML = '';
+            academyModules[wing].forEach(mod => {
+                c.innerHTML += `<div class="hover-pop bg-midnight bg-opacity-80 p-5 rounded-2xl border border-gold border-opacity-20 cursor-pointer flex justify-between shadow-sm group shrink-0" onclick="openLesson('${mod.t}', '${mod.d}', '${mod.c}')"><div class="flex space-x-4 items-start"><div class="w-12 h-12 rounded-xl bg-gradient-to-br from-charcoal to-midnight text-gold flex items-center justify-center border border-gold border-opacity-30 shadow-[0_0_10px_rgba(212,175,55,0.1)] group-hover:scale-110 transition-transform shrink-0"><i class="fa-solid fa-file-lines text-lg"></i></div><div><h3 class="text-xs font-semibold text-ivory group-hover:text-gold transition-colors">${mod.t}</h3><p class="text-[10px] text-gray-400 mt-1.5 leading-relaxed">${mod.d}</p></div></div><i class="fa-solid fa-angle-right text-gold text-opacity-50 mt-3 group-hover:text-opacity-100 transition-opacity"></i></div>`;
+            });
+        }
+
+        let activeLessonTitle = "";
+        function openLesson(t, d, c) {
+            playPremiumClick('click'); activeLessonTitle = t; document.getElementById('lesson-title').innerText = t; document.getElementById('lesson-desc').innerText = d; document.getElementById('lesson-text-content').innerText = c;
+            const m = document.getElementById('lesson-modal'); const box = document.getElementById('lesson-modal-content'); m.classList.remove('hidden'); setTimeout(() => { m.classList.remove('opacity-0'); box.classList.remove('scale-95'); }, 10);
+        }
+        function closeLessonModal() { const m = document.getElementById('lesson-modal'); const box = document.getElementById('lesson-modal-content'); m.classList.add('opacity-0'); box.classList.add('scale-95'); setTimeout(() => m.classList.add('hidden'), 300); }
+        function completeLesson() { closeLessonModal(); playPremiumClick('success'); showPremiumToast('ได้รับรองความรู้แล้ว'); if(!AppState.unlockedCertificates.includes(activeLessonTitle)) AppState.unlockedCertificates.push(activeLessonTitle); updateVaultStats(); }
+        
+        function updateVaultStats() {
+            const tM = 30; const c = AppState.unlockedCertificates.length; const p = Math.min(100, Math.round((c / tM) * 100));
+            document.getElementById('dash-circular-progress').setAttribute('stroke-dashoffset', 213 - (p / 100) * 213); document.getElementById('dash-progress-percentage').innerText = `${p}%`;
+            document.getElementById('dashboard-progress-detail').innerText = `เรียนจบแล้ว ${c}/${tM} บทเรียน`; document.getElementById('vault-courses-count').innerText = `${c} โมดูล`;
+            const certC = document.getElementById('certificates-container');
+            if (c === 0) certC.innerHTML = `<div class="bg-midnight p-6 rounded-2xl border border-dashed border-gold border-opacity-40 text-center text-[11px] text-gray-500 uppercase tracking-widest">เรียน The Academy เพื่อรับการรับรอง</div>`;
+            else { certC.innerHTML = ''; AppState.unlockedCertificates.forEach(cert => certC.innerHTML += `<div class="bg-gradient-to-r from-[#1A1C24] to-midnight p-5 rounded-2xl border border-gold border-opacity-30 flex justify-between hover-pop cursor-pointer shadow-md shrink-0"><div class="flex items-center space-x-4 text-gold"><i class="fa-solid fa-ribbon text-2xl drop-shadow-[0_0_5px_rgba(212,175,55,0.5)]"></i><div><h4 class="text-xs font-bold text-gold-gradient">${cert}</h4><p class="text-[9px] text-gray-400 mt-1 tracking-widest uppercase">Certified Module</p></div></div></div>`); }
+        }
+
+        // Forum Logic
+        function showCreatePostModal() { playPremiumClick('click'); const m = document.getElementById('post-modal'); const c = document.getElementById('post-modal-content'); m.classList.remove('hidden'); setTimeout(() => { m.classList.remove('opacity-0'); c.classList.remove('scale-95'); }, 10); }
+        function closePostModal() { const m = document.getElementById('post-modal'); const c = document.getElementById('post-modal-content'); m.classList.add('opacity-0'); c.classList.add('scale-95'); setTimeout(() => m.classList.add('hidden'), 300); }
+        function submitPost() {
+            const t = document.getElementById('post-title').value.trim(); const b = document.getElementById('post-body').value.trim(); if(!t || !b) { showPremiumToast('ระบุข้อมูลให้ครบถ้วน'); return; }
+            AppState.forumPosts.unshift({ id: Date.now(), author: `Anonymous Elite #${Math.floor(Math.random()*900)+100}`, title: t, body: b, likes: 0, userLiked: false, comments: [], timestamp: new Date() });
+            document.getElementById('post-title').value = ''; document.getElementById('post-body').value = ''; closePostModal(); renderForumPosts(); playPremiumClick('success'); showPremiumToast('เผยแพร่กระทู้แล้ว');
+        }
+        function formatTimeAgo(d) { const diff = Math.floor((new Date() - new Date(d)) / 60000); if (diff < 1) return "เมื่อสักครู่"; if (diff < 60) return `${diff} นาทีที่แล้ว`; return `${Math.floor(diff/60)} ชม. ที่แล้ว`; }
+        
+        function renderForumPosts() {
+            const c = document.getElementById('forum-posts-container'); if(!c) return; c.innerHTML = '';
+            AppState.forumPosts.forEach(p => c.innerHTML += `<div class="hover-pop bg-midnight bg-opacity-80 p-5 rounded-2xl border border-gold border-opacity-20 space-y-3 cursor-pointer shadow-sm shrink-0" onclick="viewThread(${p.id})"><div class="flex justify-between items-center"><span class="text-[10px] text-gold font-bold uppercase tracking-wider"><i class="fa-solid fa-user-secret mr-1"></i> ${p.author}</span><span class="text-[9px] text-gray-500">${formatTimeAgo(p.timestamp)}</span></div><h4 class="text-sm font-serif font-medium text-ivory">${p.title}</h4><p class="text-[11px] text-gray-400 line-clamp-2 leading-relaxed font-light">${p.body}</p><div class="flex space-x-5 text-[10px] pt-2 border-t border-gold border-opacity-10 mt-2"><button onclick="toggleLike(${p.id}, event)" class="hover-pop flex items-center space-x-1.5 ${p.userLiked ? 'text-rose-400':'text-gold'} font-semibold"><i class="${p.userLiked?'fa-solid':'fa-regular'} fa-heart text-sm"></i><span>${p.likes} ถูกใจ</span></button><span class="text-gray-400 flex items-center space-x-1.5"><i class="fa-regular fa-comment text-sm"></i> <span>${p.comments.length} ความเห็น</span></span></div></div>`);
+        }
+        function toggleLike(id, e) { if(e) e.stopPropagation(); playPremiumClick('click'); const p = AppState.forumPosts.find(x => x.id === id); if(p.userLiked) { p.likes--; p.userLiked=false; } else { p.likes++; p.userLiked=true; } renderForumPosts(); }
+        function toggleLikeActiveThread() { if(AppState.activeThreadId) { toggleLike(AppState.activeThreadId); viewThread(AppState.activeThreadId); } }
+        
+        function viewThread(id) {
+            AppState.activeThreadId = id; const p = AppState.forumPosts.find(x => x.id === id); if(!p) return;
+            document.getElementById('detail-thread-author').innerHTML = `<i class="fa-solid fa-user-secret mr-1"></i> ${p.author}`; document.getElementById('detail-thread-time').innerText = formatTimeAgo(p.timestamp); document.getElementById('detail-thread-title').innerText = p.title; document.getElementById('detail-thread-body').innerText = p.body;
+            document.getElementById('detail-likes-count').innerText = `${p.likes} ถูกใจ`; const lb = document.getElementById('detail-like-btn'); const lbi = document.getElementById('detail-like-icon');
+            if (p.userLiked) { lb.className = "hover-pop flex items-center space-x-2 text-xs text-rose-400 font-bold"; lbi.className="fa-solid fa-heart text-sm"; } else { lb.className = "hover-pop flex items-center space-x-2 text-xs text-gold"; lbi.className="fa-regular fa-heart text-sm"; }
+            document.getElementById('detail-comments-count').innerHTML = `<i class="fa-regular fa-comment mr-1"></i> ${p.comments.length} ความเห็น`; document.getElementById('detail-comments-badge').innerText = `${p.comments.length} Comments`;
+            const cc = document.getElementById('thread-comments-list'); cc.innerHTML = '';
+            if (p.comments.length === 0) cc.innerHTML = `<div class="bg-midnight p-5 rounded-xl border border-dashed border-gold border-opacity-30 text-center text-[10px] text-gray-500 uppercase tracking-widest shrink-0">ร่วมแสดงความเห็นเป็นคนแรก!</div>`;
+            else p.comments.forEach(cmt => cc.innerHTML += `<div class="bg-midnight bg-opacity-80 p-4 rounded-xl border border-gold border-opacity-15 shrink-0"><div class="flex justify-between items-center"><span class="text-[10px] text-gold font-semibold tracking-wider"><i class="fa-solid fa-user-secret mr-1"></i> ${cmt.author}</span><span class="text-[8px] text-gray-500">${formatTimeAgo(cmt.timestamp)}</span></div><p class="text-xs mt-2 text-gray-300 leading-relaxed font-light">${cmt.text}</p></div>`);
+            changeScreen('thread-detail');
+        }
+        function submitComment() {
+            const i = document.getElementById('comment-input'); const t = i.value.trim(); if(!t) { showPremiumToast('พิมพ์ความเห็นก่อนส่ง'); return; }
+            const p = AppState.forumPosts.find(x => x.id === AppState.activeThreadId); p.comments.push({ author:`Anonymous #${Math.floor(Math.random()*900)+100}`, text:t, timestamp:new Date() });
+            i.value = ''; playPremiumClick('success'); viewThread(p.id); renderForumPosts();
+            // Scroll to bottom
+            const container = document.getElementById('screen-thread-detail').firstElementChild;
+            setTimeout(() => container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' }), 50);
+        }
+    </script>
+</body>
+</html>

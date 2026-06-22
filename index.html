@@ -861,14 +861,15 @@
             playPremiumClick('click');
             ['business', 'finance', 'economics'].forEach(w => { const btn = document.getElementById(`academy-tab-${w}`); if (w === wing) { btn.classList.add('bg-gold', 'bg-opacity-20', 'text-gold'); btn.classList.remove('bg-transparent', 'text-gray-500'); } else { btn.classList.remove('bg-gold', 'bg-opacity-20', 'text-gold'); btn.classList.add('bg-transparent', 'text-gray-500'); } });
             const c = document.getElementById('academy-modules-container'); c.innerHTML = '';
-            academyModules[wing].forEach(mod => {
-                c.innerHTML += `<div class="hover-pop bg-midnight bg-opacity-80 p-5 rounded-2xl border border-gold border-opacity-20 cursor-pointer flex justify-between shadow-sm group shrink-0" onclick="openLesson('${mod.t}', '${mod.d}', '${mod.c}')"><div class="flex space-x-4 items-start"><div class="w-12 h-12 rounded-xl bg-gradient-to-br from-charcoal to-midnight text-gold flex items-center justify-center border border-gold border-opacity-30 shadow-[0_0_10px_rgba(212,175,55,0.1)] group-hover:scale-110 transition-transform shrink-0"><i class="fa-solid fa-file-lines text-lg"></i></div><div><h3 class="text-xs font-semibold text-ivory group-hover:text-gold transition-colors">${mod.t}</h3><p class="text-[10px] text-gray-400 mt-1.5 leading-relaxed">${mod.d}</p></div></div><i class="fa-solid fa-angle-right text-gold text-opacity-50 mt-3 group-hover:text-opacity-100 transition-opacity"></i></div>`;
+            academyModules[wing].forEach((mod, index) => {
+                c.innerHTML += `<div class="hover-pop bg-midnight bg-opacity-80 p-5 rounded-2xl border border-gold border-opacity-20 cursor-pointer flex justify-between shadow-sm group shrink-0" onclick="openLesson('${wing}', ${index})"><div class="flex space-x-4 items-start"><div class="w-12 h-12 rounded-xl bg-gradient-to-br from-charcoal to-midnight text-gold flex items-center justify-center border border-gold border-opacity-30 shadow-[0_0_10px_rgba(212,175,55,0.1)] group-hover:scale-110 transition-transform shrink-0"><i class="fa-solid fa-file-lines text-lg"></i></div><div><h3 class="text-xs font-semibold text-ivory group-hover:text-gold transition-colors">${mod.t}</h3><p class="text-[10px] text-gray-400 mt-1.5 leading-relaxed">${mod.d}</p></div></div><i class="fa-solid fa-angle-right text-gold text-opacity-50 mt-3 group-hover:text-opacity-100 transition-opacity"></i></div>`;
             });
         }
 
         let activeLessonTitle = "";
-        function openLesson(t, d, c) {
-            playPremiumClick('click'); activeLessonTitle = t; document.getElementById('lesson-title').innerText = t; document.getElementById('lesson-desc').innerText = d; document.getElementById('lesson-text-content').innerText = c;
+        function openLesson(wing, index) {
+            const mod = academyModules[wing][index];
+            playPremiumClick('click'); activeLessonTitle = mod.t; document.getElementById('lesson-title').innerText = mod.t; document.getElementById('lesson-desc').innerText = mod.d; document.getElementById('lesson-text-content').innerText = mod.c;
             const m = document.getElementById('lesson-modal'); const box = document.getElementById('lesson-modal-content'); m.classList.remove('hidden'); setTimeout(() => { m.classList.remove('opacity-0'); box.classList.remove('scale-95'); }, 10);
         }
         function closeLessonModal() { const m = document.getElementById('lesson-modal'); const box = document.getElementById('lesson-modal-content'); m.classList.add('opacity-0'); box.classList.add('scale-95'); setTimeout(() => m.classList.add('hidden'), 300); }
